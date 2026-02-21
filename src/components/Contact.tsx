@@ -145,18 +145,6 @@ const Contact: React.FC = () => {
               />
             </div>
 
-            {/* Status message */}
-            {statusMessage && (
-              <div className={`form-status form-status-${statusType}`}>
-                {statusType === "success" ? (
-                  <FaCheckCircle />
-                ) : (
-                  <FaExclamationCircle />
-                )}
-                {statusMessage}
-              </div>
-            )}
-
             {/* Submit button */}
             <button
               type="submit"
@@ -176,6 +164,18 @@ const Contact: React.FC = () => {
               )}
             </button>
           </form>
+
+          {/* Status message FUERA del form */}
+          {statusMessage && (
+            <div className={`form-status form-status-${statusType}`}>
+              {statusType === "success" ? (
+                <FaCheckCircle />
+              ) : (
+                <FaExclamationCircle />
+              )}
+              <span>{statusMessage}</span>
+            </div>
+          )}
         </div>
       </div>
     </section>
