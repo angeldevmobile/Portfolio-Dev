@@ -9,10 +9,17 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Servir archivos estáticos del build de React
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'build'), {
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (filePath.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+  }
+}));
 
-// Endpoint para enviar emails
+// 2. Endpoint para enviar emails
 app.post('/api/send-email', async (req, res) => {
   const { email, name, message } = req.body;
 
@@ -41,8 +48,11 @@ app.post('/api/send-email', async (req, res) => {
   }
 });
 
-// Cualquier otra ruta sirve React
+// 3. Catch-all: solo para rutas SIN extensión de archivo
 app.get('*', (req, res) => {
+  if (req.path.includes('.')) {
+    return res.status(404).send('Not found');
+  }
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
