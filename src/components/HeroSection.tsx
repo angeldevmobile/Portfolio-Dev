@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { FaLinkedin, FaGithub, FaArrowDown } from 'react-icons/fa';
 import { SiX } from 'react-icons/si';
-import profilePic from '../assets/foto_web.jpg';
+import profilePic from '../assets/perfil-github.png';
 import './css/HeroSection.css';
 
 /* ═══════════════════════════════════════════

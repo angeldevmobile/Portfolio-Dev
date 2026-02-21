@@ -5,7 +5,7 @@ import Imagen2 from "../assets/web.png";
 import Imagen3 from "../assets/asistente_ia.png";
 import imagen4 from "../assets/orion.png";
 import colaborator1 from "../assets/platform.png";
-import colaborator2 from "../assets/foto_web.jpg";
+import colaborator2 from "../assets/perfil-github.png";
 import { FaLinkedin, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 interface Projects {
