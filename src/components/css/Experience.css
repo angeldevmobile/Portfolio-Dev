@@ -60,6 +60,7 @@
   font-weight: 600;
   margin-bottom: 10px;
   -webkit-background-clip: text;
+  background-clip: text;
   color: #e0f2fe; /* Azul muy claro para buen contraste con el fondo */
   background: none; /* Evita el degradado para que el texto sea más fácil de leer */
 }
@@ -191,5 +192,621 @@ p {
 
   .card_one {
       width: 100%; /* Ocupa todo el ancho en pantallas pequeñas */
+  }
+}
+
+/* ═══════════════════════════════════════════
+   EXPERIENCE SECTION - 3D Timeline Premium
+   ═══════════════════════════════════════════ */
+
+/* ── Section ── */
+.exp-section {
+  position: relative;
+  padding: 100px 40px 120px;
+  background: #0a0a1a;
+  color: #ffffff;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Background grid */
+.exp-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: expGridMove 25s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes expGridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(60px, 60px); }
+}
+
+.exp-bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.06;
+}
+
+.exp-orb-1 {
+  width: 500px;
+  height: 500px;
+  background: #3b82f6;
+  top: -100px;
+  left: -150px;
+  animation: expOrb1 16s ease-in-out infinite;
+}
+
+.exp-orb-2 {
+  width: 400px;
+  height: 400px;
+  background: #a855f7;
+  bottom: -100px;
+  right: -100px;
+  animation: expOrb2 20s ease-in-out infinite;
+}
+
+@keyframes expOrb1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(40px, 40px); }
+}
+
+@keyframes expOrb2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-30px, -30px); }
+}
+
+/* ── Header ── */
+.exp-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 80px;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.exp-header.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.exp-header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 6px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #93c5fd;
+  letter-spacing: 0.5px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.exp-title {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+.exp-gradient-text {
+  background: linear-gradient(135deg, #3b82f6, #a855f7, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.exp-subtitle {
+  font-size: 17px;
+  color: #94a3b8;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ═══════════════════════════════════════════
+   TIMELINE
+   ═══════════════════════════════════════════ */
+
+.exp-timeline {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.exp-timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(59, 130, 246, 0.3) 10%,
+    rgba(168, 85, 247, 0.3) 90%,
+    transparent
+  );
+  transform: translateX(-50%);
+}
+
+/* ── Card Wrapper ── */
+.exp-card-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 56px;
+  opacity: 0;
+  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--exp-index) * 0.15s);
+}
+
+.exp-card-wrapper.visible {
+  opacity: 1;
+}
+
+.exp-card-wrapper.left {
+  justify-content: flex-start;
+  padding-right: calc(50% + 40px);
+  transform: translateX(-60px) rotateY(6deg);
+}
+
+.exp-card-wrapper.left.visible {
+  transform: translateX(0) rotateY(0deg);
+}
+
+.exp-card-wrapper.right {
+  justify-content: flex-end;
+  padding-left: calc(50% + 40px);
+  transform: translateX(60px) rotateY(-6deg);
+}
+
+.exp-card-wrapper.right.visible {
+  transform: translateX(0) rotateY(0deg);
+}
+
+/* ── Timeline Node ── */
+.exp-timeline-node {
+  position: absolute;
+  left: 50%;
+  top: 28px;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.exp-node-inner {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--exp-color), rgba(99, 102, 241, 0.8));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border: 3px solid #0a0a1a;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--exp-color) 40%, transparent);
+  position: relative;
+  z-index: 2;
+}
+
+.exp-node-ping {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--exp-color);
+  animation: expNodePing 2.5s ease-in-out infinite;
+}
+
+@keyframes expNodePing {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ═══════════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════════ */
+
+.exp-card {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+}
+
+.exp-card-glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, var(--exp-color), transparent, var(--exp-color));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(1px);
+  z-index: 0;
+}
+
+.exp-card:hover .exp-card-glow {
+  opacity: 0.4;
+}
+
+.exp-card-inner {
+  position: relative;
+  background: linear-gradient(145deg, #111127, #0d0d22);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 22px;
+  padding: 0;
+  z-index: 1;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  overflow: hidden;
+}
+
+.exp-card:hover .exp-card-inner {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.3),
+    0 0 30px color-mix(in srgb, var(--exp-color) 10%, transparent);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── SVG floating icon ── */
+.exp-card-svg {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  width: 50px;
+  height: 50px;
+  z-index: 5;
+  filter: drop-shadow(0 4px 10px color-mix(in srgb, var(--exp-color) 30%, transparent));
+  transition: transform 0.4s ease;
+}
+
+.exp-card:hover .exp-card-svg {
+  transform: translateY(-4px) rotate(3deg) scale(1.1);
+}
+
+.exp-svg-icon {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Image ── */
+.exp-card-image {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+}
+
+.exp-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.6) saturate(1.2);
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.exp-card:hover .exp-card-image img {
+  transform: scale(1.05);
+  filter: brightness(0.7) saturate(1.3);
+}
+
+.exp-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 20%, #111127 100%);
+  z-index: 1;
+}
+
+/* ── Card Content Padding ── */
+.exp-card-header,
+.exp-card-role,
+.exp-card-company-row,
+.exp-card-description,
+.exp-highlights,
+.exp-skills-row,
+.exp-expand-hint {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* ── Card Header ── */
+.exp-card-header {
+  margin-top: -8px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 14px;
+}
+
+.exp-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.exp-card-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--type-color);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.exp-card-date {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* ── Content ── */
+.exp-card-role {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #f1f5f9;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.exp-card-company-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.exp-card-company {
+  font-size: 14px;
+  color: var(--exp-color);
+  font-weight: 600;
+}
+
+.exp-company-link {
+  color: #64748b;
+  transition: color 0.3s ease, transform 0.3s ease;
+  display: flex;
+}
+
+.exp-company-link:hover {
+  color: var(--exp-color);
+  transform: translateY(-1px);
+}
+
+.exp-card-description {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.7;
+  margin-bottom: 14px;
+}
+
+/* ── Highlights (expandable) ── */
+.exp-highlights {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease, margin 0.4s ease;
+  margin-bottom: 0;
+}
+
+.exp-highlights.show {
+  max-height: 400px;
+  opacity: 1;
+  margin-bottom: 16px;
+}
+
+.exp-highlights-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #475569;
+  margin-bottom: 10px;
+}
+
+.exp-highlights-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exp-highlight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12px;
+  color: #cbd5e1;
+  line-height: 1.6;
+}
+
+.exp-highlight-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ── Skills ── */
+.exp-skills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.exp-skill-tag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #c4b5fd;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.exp-skill-tag:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--tag-color);
+  color: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+/* ── Expand hint ── */
+.exp-expand-hint {
+  padding-top: 12px;
+  padding-bottom: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 11px;
+  color: #475569;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.exp-card:hover .exp-expand-hint {
+  color: var(--exp-color);
+}
+
+.exp-expand-arrow {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+}
+
+.exp-expand-arrow.rotated {
+  transform: rotate(90deg);
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+
+@media (max-width: 900px) {
+  .exp-section {
+    padding: 60px 20px 80px;
+  }
+
+  .exp-timeline {
+    max-width: 100%;
+  }
+
+  .exp-timeline-line {
+    left: 24px;
+  }
+
+  .exp-timeline-node {
+    left: 24px;
+  }
+
+  .exp-card-wrapper.left,
+  .exp-card-wrapper.right {
+    padding-left: 60px;
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+
+  .exp-card-wrapper.left {
+    transform: translateX(-40px);
+  }
+
+  .exp-card-wrapper.right {
+    transform: translateX(-40px);
+  }
+
+  .exp-card-wrapper.left.visible,
+  .exp-card-wrapper.right.visible {
+    transform: translateX(0) rotateY(0deg);
+  }
+
+  .exp-card-svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  .exp-card-image {
+    height: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .exp-section {
+    padding: 40px 16px 60px;
+  }
+
+  .exp-header {
+    margin-bottom: 50px;
+  }
+
+  .exp-timeline-line {
+    left: 16px;
+  }
+
+  .exp-timeline-node {
+    left: 16px;
+  }
+
+  .exp-node-inner {
+    width: 32px;
+    height: 32px;
+  }
+
+  .exp-card-wrapper.left,
+  .exp-card-wrapper.right {
+    padding-left: 46px;
+    margin-bottom: 36px;
+  }
+
+  .exp-card-header,
+  .exp-card-role,
+  .exp-card-company-row,
+  .exp-card-description,
+  .exp-highlights,
+  .exp-skills-row,
+  .exp-expand-hint {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .exp-card-role {
+    font-size: 16px;
+  }
+
+  .exp-card-image {
+    height: 80px;
+  }
+
+  .exp-card-svg {
+    width: 38px;
+    height: 38px;
+    top: 4px;
+    right: 8px;
   }
 }

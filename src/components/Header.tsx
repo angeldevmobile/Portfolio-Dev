@@ -1,159 +1,153 @@
 // Header.tsx
-import React, { useState } from "react";
-import { FaBars, FaTimes } from "react-icons/fa"; 
-import { CSSTransition } from "react-transition-group"; 
-import './css/header.css'; 
+import React, { useState, useEffect } from "react";
+import { FaBars, FaTimes, FaGithub } from "react-icons/fa";
+import "./css/header.css";
 
 interface HeaderProps {
-  setCurrentSection: (section: string) => void; // función para cambiar la sección visible
+  setCurrentSection: (section: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ setCurrentSection }) => {
-  const [menuOpen, setMenuOpen] = useState(false); // Estado para controlar el menú
+const navItems = [
+  { id: "hero", label: "Home" },
+  { id: "skills", label: "Skills" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "education", label: "Education" },
+  { id: "contact", label: "Contact" },
+];
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+const Header: React.FC<HeaderProps> = ({ setCurrentSection }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [menuOpen]);
 
   const handleNavClick = (section: string) => {
     setCurrentSection(section);
-    setMenuOpen(false); // Cierra el menú al seleccionar una sección
+    setActiveSection(section);
+    setMenuOpen(false);
   };
 
   return (
-    <header className="flex items-center justify-between p-4 bg-dark">
-      <h1 className="text-3xl font-bold">
-        <span style={{ color: "purple" }}>{"< "}</span>
-        <span style={{ color: "white" }}>Portfolio</span>
-        <span style={{ color: "purple" }}>{" />"}</span>
-      </h1>
-      {/* Menú en versión de escritorio */}
-      <nav className="justify-center flex-grow hidden md:flex">
-        <ul className="flex space-x-6">
-          <li>
-            <button
-              onClick={() => handleNavClick("hero")}
-              className="text-white hover:text-purple"
+    <>
+      <header className={`header ${scrolled ? "header-scrolled" : ""}`}>
+        <div className="header-inner">
+          {/* Logo */}
+          <button className="header-logo" onClick={() => handleNavClick("hero")}>
+            <span className="logo-bracket">{"<"}</span>
+            <span className="logo-text">Angel</span>
+            <span className="logo-dot">.</span>
+            <span className="logo-text-accent">dev</span>
+            <span className="logo-bracket">{"/>"}</span>
+          </button>
+
+          {/* Desktop Nav */}
+          <nav className="header-nav">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                className={`nav-link ${activeSection === item.id ? "nav-link-active" : ""}`}
+                onClick={() => handleNavClick(item.id)}
+              >
+                {item.label}
+                {activeSection === item.id && <span className="nav-indicator" />}
+              </button>
+            ))}
+          </nav>
+
+          {/* Right side */}
+          <div className="header-right">
+            <a
+              href="https://github.com/angeldevmobile"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="header-github-btn"
             >
-              Home
-            </button>
-          </li>
-          <li>
+              <FaGithub />
+              <span className="github-btn-text">GitHub</span>
+            </a>
+
+            {/* Mobile toggle */}
             <button
-              onClick={() => handleNavClick("contact")}
-              className="text-white hover:text-purple"
+              className={`header-mobile-toggle ${menuOpen ? "toggle-active" : ""}`}
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Toggle menu"
             >
-              Contact Me
+              {menuOpen ? <FaTimes /> : <FaBars />}
             </button>
-          </li>
-          <li>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div
+        className={`mobile-overlay ${menuOpen ? "mobile-overlay-visible" : ""}`}
+        onClick={() => setMenuOpen(false)}
+      />
+
+      {/* Mobile Menu Panel */}
+      <nav className={`mobile-menu ${menuOpen ? "mobile-menu-open" : ""}`}>
+        <div className="mobile-menu-header">
+          <button className="header-logo" onClick={() => handleNavClick("hero")}>
+            <span className="logo-bracket">{"<"}</span>
+            <span className="logo-text">Angel</span>
+            <span className="logo-dot">.</span>
+            <span className="logo-text-accent">dev</span>
+            <span className="logo-bracket">{"/>"}</span>
+          </button>
+          <button
+            className="mobile-close-btn"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            <FaTimes />
+          </button>
+        </div>
+
+        <div className="mobile-menu-links">
+          {navItems.map((item, index) => (
             <button
-              onClick={() => handleNavClick("skills")}
-              className="text-white hover:text-purple"
+              key={item.id}
+              className={`mobile-link ${activeSection === item.id ? "mobile-link-active" : ""}`}
+              onClick={() => handleNavClick(item.id)}
+              style={{ "--link-index": index } as React.CSSProperties}
             >
-              Skills
+              <span className="mobile-link-number">0{index + 1}</span>
+              <span className="mobile-link-label">{item.label}</span>
+              {activeSection === item.id && <span className="mobile-link-indicator" />}
             </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleNavClick("experience")}
-              className="text-white hover:text-purple"
-            >
-              Experience
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleNavClick("projects")}
-              className="text-white hover:text-purple"
-            >
-              Projects
-            </button>
-          </li>
-          <li>
-            <button
-              onClick={() => handleNavClick("education")}
-              className="text-white hover:text-purple"
-            >
-              Education
-            </button>
-          </li>
-        </ul>
+          ))}
+        </div>
+
+        <div className="mobile-menu-footer">
+          <a
+            href="https://github.com/angeldevmobile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mobile-github-btn"
+          >
+            <FaGithub />
+            View GitHub Profile
+          </a>
+          <p className="mobile-footer-text">© 2026 Angel Zapata</p>
+        </div>
       </nav>
-      {/* Botón de GitHub siempre a la derecha */}
-      <a
-        href="https://github.com/angeldevmobile"
-        className="px-4 py-2 ml-auto text-white border rounded border-purple hover:bg-purple"
-      >
-        Github Profile
-      </a>
-      {/* Icono de menú para móviles */}
-      <div className="md:hidden">
-        <button onClick={toggleMenu} className="text-4xl text-white">
-          {menuOpen ? <FaTimes /> : <FaBars />}
-        </button>
-      </div>
-      {/* Menú para móviles */}
-      <CSSTransition
-        in={menuOpen}
-        timeout={300}
-        classNames="menu"
-        unmountOnExit
-      >
-        <nav className="flex flex-col items-center mt-4 space-y-4 md:hidden">
-          <ul className="flex flex-col items-center space-y-4">
-            <li>
-              <button
-                onClick={() => handleNavClick("hero")}
-                className="text-white hover:text-purple"
-              >
-                Home
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("contact")}
-                className="text-white hover:text-purple"
-              >
-                Contact Me
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("skills")}
-                className="text-white hover:text-purple"
-              >
-                Skills
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("experience")}
-                className="text-white hover:text-purple"
-              >
-                Experience
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("projects")}
-                className="text-white hover:text-purple"
-              >
-                Projects
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => handleNavClick("education")}
-                className="text-white hover:text-purple"
-              >
-                Education
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </CSSTransition>
-    </header>
+    </>
   );
 };
 
