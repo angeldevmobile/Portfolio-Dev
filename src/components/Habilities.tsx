@@ -611,7 +611,7 @@ const Skills: React.FC = () => {
   const statsRef = useRef<HTMLDivElement>(null);
 
   // Animated counters 
-  const techCount = useCounter(20, statsVisible, 1800);
+  const techCount = useCounter(15, statsVisible, 1800);
   const projectCount = useCounter(6, statsVisible, 1500);
   const aiModels = useCounter(4, statsVisible, 1200);
   const yearsExp = useCounter(1, statsVisible, 1000);
