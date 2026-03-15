@@ -20,7 +20,6 @@ import {
   SiFlutter,
   SiIntellijidea,
   SiTypescript,
-  SiDocker,
   SiGooglecloud,
   SiOpenai,
   SiLangchain,
@@ -30,7 +29,6 @@ import {
   SiPostgresql,
   SiRedis,
   SiVercel,
-  SiNotion,
   SiLinux,
 } from "react-icons/si";
 import "./css/Skills.css";
@@ -190,14 +188,14 @@ const categories: SkillCategory[] = [
     gradient: ["#06b6d4", "#3b82f6"],
     icon: <FrontendSVG />,
     skills: [
-      { name: "React", icon: <FaReact />, color: "#61dafb", level: 90 },
-      { name: "Flutter", icon: <SiFlutter />, color: "#02569B", level: 85 },
-      { name: "TypeScript", icon: <SiTypescript />, color: "#3178c6", level: 88 },
-      { name: "JavaScript", icon: <SiJavascript />, color: "#f7df1e", level: 92 },
-      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06b6d4", level: 90 },
-      { name: "HTML5", icon: <SiHtml5 />, color: "#e34f26", level: 95 },
-      { name: "CSS3", icon: <SiCss3 />, color: "#1572b6", level: 92 },
-      { name: "Bootstrap", icon: <SiBootstrap />, color: "#7952b3", level: 85 },
+      { name: "React", icon: <FaReact />, color: "#61dafb", level: 78 },
+      { name: "Flutter", icon: <SiFlutter />, color: "#02569B", level: 72 },
+      { name: "TypeScript", icon: <SiTypescript />, color: "#3178c6", level: 75 },
+      { name: "JavaScript", icon: <SiJavascript />, color: "#f7df1e", level: 80 },
+      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06b6d4", level: 78 },
+      { name: "HTML5", icon: <SiHtml5 />, color: "#e34f26", level: 85 },
+      { name: "CSS3", icon: <SiCss3 />, color: "#1572b6", level: 82 },
+      { name: "Bootstrap", icon: <SiBootstrap />, color: "#7952b3", level: 70 },
     ],
   },
   {
@@ -206,16 +204,16 @@ const categories: SkillCategory[] = [
     gradient: ["#22c55e", "#06b6d4"],
     icon: <BackendSVG />,
     skills: [
-      { name: "Node.js", icon: <FaNodeJs />, color: "#339933", level: 88 },
-      { name: "Express", icon: <SiExpress />, color: "#ffffff", level: 85 },
-      { name: "Python", icon: <SiPython />, color: "#3776ab", level: 85 },
-      { name: "FastAPI", icon: <SiFastapi />, color: "#009688", level: 80 },
-      { name: "Java", icon: <FaJava />, color: "#ed8b00", level: 78 },
-      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6db33f", level: 75 },
-      { name: "MySQL", icon: <SiMysql />, color: "#4479a1", level: 85 },
-      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#4169e1", level: 82 },
-      { name: "MongoDB", icon: <SiMongodb />, color: "#47a248", level: 80 },
-      { name: "Redis", icon: <SiRedis />, color: "#dc382d", level: 72 },
+      { name: "Node.js", icon: <FaNodeJs />, color: "#339933", level: 78 },
+      { name: "Express", icon: <SiExpress />, color: "#ffffff", level: 74 },
+      { name: "Python", icon: <SiPython />, color: "#3776ab", level: 76 },
+      { name: "FastAPI", icon: <SiFastapi />, color: "#009688", level: 68 },
+      { name: "Java", icon: <FaJava />, color: "#ed8b00", level: 65 },
+      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6db33f", level: 62 },
+      { name: "MySQL", icon: <SiMysql />, color: "#4479a1", level: 75 },
+      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#4169e1", level: 72 },
+      { name: "MongoDB", icon: <SiMongodb />, color: "#47a248", level: 70 },
+      { name: "Redis", icon: <SiRedis />, color: "#dc382d", level: 60 },
     ],
   },
   {
@@ -224,12 +222,12 @@ const categories: SkillCategory[] = [
     gradient: ["#a855f7", "#ec4899"],
     icon: <AiSVG />,
     skills: [
-      { name: "OpenAI / GPT-4", icon: <SiOpenai />, color: "#10a37f", level: 90 },
-      { name: "LangChain", icon: <SiLangchain />, color: "#1c3c3c", level: 85 },
-      { name: "Hugging Face", icon: <SiHuggingface />, color: "#ffcc00", level: 78 },
-      { name: "TensorFlow", icon: <SiTensorflow />, color: "#ff6f00", level: 70 },
-      { name: "Claude API", icon: <FaBrain />, color: "#d97706", level: 88 },
-      { name: "Prompt Engineering", icon: <FaLightbulb />, color: "#fbbf24", level: 92 },
+      { name: "OpenAI / GPT-4", icon: <SiOpenai />, color: "#10a37f", level: 78 },
+      { name: "LangChain", icon: <SiLangchain />, color: "#1c3c3c", level: 72 },
+      { name: "Hugging Face", icon: <SiHuggingface />, color: "#ffcc00", level: 65 },
+      { name: "TensorFlow", icon: <SiTensorflow />, color: "#ff6f00", level: 55 },
+      { name: "Claude API", icon: <FaBrain />, color: "#d97706", level: 74 },
+      { name: "Prompt Engineering", icon: <FaLightbulb />, color: "#fbbf24", level: 80 },
     ],
   },
   {
@@ -238,19 +236,17 @@ const categories: SkillCategory[] = [
     gradient: ["#f59e0b", "#ef4444"],
     icon: <ToolsSVG />,
     skills: [
-      { name: "GitHub", icon: <FaGithub />, color: "#ffffff", level: 92 },
-      { name: "Docker", icon: <SiDocker />, color: "#2496ed", level: 75 },
-      { name: "Google Cloud", icon: <SiGooglecloud />, color: "#4285f4", level: 72 },
-      { name: "Firebase", icon: <SiFirebase />, color: "#ffca28", level: 85 },
-      { name: "VS Code", icon: <SiVisualstudiocode />, color: "#007acc", level: 95 },
-      { name: "Postman", icon: <SiPostman />, color: "#ff6c37", level: 88 },
-      { name: "Figma", icon: <SiFigma />, color: "#f24e1e", level: 80 },
-      { name: "IntelliJ", icon: <SiIntellijidea />, color: "#ffffff", level: 82 },
-      { name: "Android Studio", icon: <SiAndroidstudio />, color: "#3ddc84", level: 85 },
-      { name: "Vercel", icon: <SiVercel />, color: "#ffffff", level: 85 },
-      { name: "Netlify", icon: <SiNetlify />, color: "#00c7b7", level: 88 },
-      { name: "Linux", icon: <SiLinux />, color: "#fcc624", level: 75 },
-      { name: "Notion", icon: <SiNotion />, color: "#ffffff", level: 90 },
+      { name: "GitHub", icon: <FaGithub />, color: "#ffffff", level: 82 },
+      { name: "Google Cloud", icon: <SiGooglecloud />, color: "#4285f4", level: 60 },
+      { name: "Firebase", icon: <SiFirebase />, color: "#ffca28", level: 72 },
+      { name: "VS Code", icon: <SiVisualstudiocode />, color: "#007acc", level: 88 },
+      { name: "Postman", icon: <SiPostman />, color: "#ff6c37", level: 78 },
+      { name: "Figma", icon: <SiFigma />, color: "#f24e1e", level: 68 },
+      { name: "IntelliJ", icon: <SiIntellijidea />, color: "#ffffff", level: 70 },
+      { name: "Android Studio", icon: <SiAndroidstudio />, color: "#3ddc84", level: 75 },
+      { name: "Vercel", icon: <SiVercel />, color: "#ffffff", level: 72 },
+      { name: "Netlify", icon: <SiNetlify />, color: "#00c7b7", level: 75 },
+      { name: "Linux", icon: <SiLinux />, color: "#fcc624", level: 68 },
     ],
   },
 ];
@@ -615,10 +611,10 @@ const Skills: React.FC = () => {
   const statsRef = useRef<HTMLDivElement>(null);
 
   // Animated counters
-  const techCount = useCounter(35, statsVisible, 1800);
-  const projectCount = useCounter(15, statsVisible, 1500);
-  const aiModels = useCounter(10, statsVisible, 1200);
-  const yearsExp = useCounter(3, statsVisible, 1000);
+  const techCount = useCounter(28, statsVisible, 1800);
+  const projectCount = useCounter(9, statsVisible, 1500);
+  const aiModels = useCounter(6, statsVisible, 1200);
+  const yearsExp = useCounter(2, statsVisible, 1000);
 
   useEffect(() => {
     const options = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
