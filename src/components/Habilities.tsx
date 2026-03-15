@@ -460,7 +460,7 @@ const useMagneticHover = () => {
 };
 
 /* ═══════════════════════════════════════════
-   SKILL CARD WITH 3D TILT (individual)
+   SKILL CARD WITH 3D TILT 
    ═══════════════════════════════════════════ */
 
 const SkillCard: React.FC<{
@@ -610,11 +610,11 @@ const Skills: React.FC = () => {
   const interestsRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
-  // Animated counters
-  const techCount = useCounter(28, statsVisible, 1800);
-  const projectCount = useCounter(9, statsVisible, 1500);
-  const aiModels = useCounter(6, statsVisible, 1200);
-  const yearsExp = useCounter(2, statsVisible, 1000);
+  // Animated counters 
+  const techCount = useCounter(20, statsVisible, 1800);
+  const projectCount = useCounter(6, statsVisible, 1500);
+  const aiModels = useCounter(4, statsVisible, 1200);
+  const yearsExp = useCounter(1, statsVisible, 1000);
 
   useEffect(() => {
     const options = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };

@@ -361,7 +361,7 @@ const projects: Projects[] = [
       },
     ],
     codeUrl: "https://github.com/angeldevmobile/my-portfolio-dev",
-    liveUrl: "https://angel-dev-portfolio.netlify.app/",
+    liveUrl: "https://portfolio-angel-dev.onrender.com/",
   },
   {
     title: "AI Virtual Assistant",
