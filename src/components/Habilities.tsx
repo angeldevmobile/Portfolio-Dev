@@ -614,7 +614,7 @@ const Skills: React.FC = () => {
   const techCount = useCounter(15, statsVisible, 1800);
   const projectCount = useCounter(6, statsVisible, 1500);
   const aiModels = useCounter(4, statsVisible, 1200);
-  const yearsExp = useCounter(1, statsVisible, 1000);
+  const yearsExp = useCounter(2, statsVisible, 1000);
 
   useEffect(() => {
     const options = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
