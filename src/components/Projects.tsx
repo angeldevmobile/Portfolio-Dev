@@ -278,13 +278,13 @@ const projects: Projects[] = [
     title: "Orion Language",
     date: "2025 - Present",
     description:
-      "Modern interpreted programming language with clean syntax, built-in concurrency, Spanish-friendly keywords, powerful metaprogramming, a custom parser/AST, and a bytecode VM runtime for fast execution.",
+      "A programming language for backend work and automation, written in Rust end to end. Compiles to bytecode with three execution backends sharing one frontend: a VM, a Cranelift JIT and AOT compilation to a native binary. Ships as a single executable with 58 standard library modules, a VS Code extension published on the Marketplace, and a browser playground that runs real code in a sandboxed container.",
     image: imagen4,
     collaborators: [colaborator2],
-    technologies: ["Python", "ANTLR4", "Custom Parser", "AST", "Bytecode VM", "Compiler Design"],
+    technologies: ["Rust", "Cranelift JIT", "Compiler Design", "Bytecode VM", "LSP", "DAP", "TypeScript"],
     icon: undefined,
-    status: "Interpreter Phase",
-    statusColor: "#f97316",
+    status: "Public Beta",
+    statusColor: "#22c55e",
     category: "Languages",
     members: [
       {
@@ -294,7 +294,8 @@ const projects: Projects[] = [
         linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
       },
     ],
-    codeUrl: "https://github.com/angeldevmobile",
+    codeUrl: "https://github.com/angeldevmobile/Orion",
+    liveUrl: "https://docs-orion.onrender.com",
   },
   {
     title: "Music Streaming App",
@@ -316,7 +317,7 @@ const projects: Projects[] = [
         linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
       },
     ],
-    codeUrl: "https://github.com/angeldevmobile",
+    codeUrl: "https://github.com/angeldevmobile/app-music-mode",
   },
   {
     title: "Mobile Applications",
@@ -360,7 +361,7 @@ const projects: Projects[] = [
         linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
       },
     ],
-    codeUrl: "https://github.com/angeldevmobile/my-portfolio-dev",
+    codeUrl: "https://github.com/angeldevmobile/Portfolio-Dev",
     liveUrl: "https://portfolio-angel-dev.onrender.com/",
   },
   {
@@ -383,7 +384,7 @@ const projects: Projects[] = [
         linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
       },
     ],
-    codeUrl: "https://github.com/angeldevmobile",
+    codeUrl: "https://github.com/angeldevmobile/assistant-virtual-prod",
   },
 ];
 
