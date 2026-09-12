@@ -12,7 +12,7 @@ const degree = {
   title: 'Systems & Computer Engineering',
   school: 'Universidad Tecnológica del Perú',
   location: 'Lima, Perú',
-  period: '2020 – 2024',
+  period: '2019 – 2025',
   status: 'Graduated',
   summary: 'Ten semesters covering software architecture, algorithms, databases and cloud computing.',
   skills: ['Software Engineering', 'Algorithms', 'Databases', 'Cloud Computing'],
