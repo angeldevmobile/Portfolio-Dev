@@ -197,7 +197,7 @@ p {
 
 /* ═══════════════════════════════════════════
    EXPERIENCE SECTION
-   One column, grouped by company, rail on the left
+   Timeline of parallel tracks + tabs with a detail panel
    ═══════════════════════════════════════════ */
 
 .exp-section {
@@ -262,21 +262,28 @@ p {
   50% { transform: translate(-30px, -30px); }
 }
 
+/* Entrance: header, timeline and body rise in sequence */
+@keyframes expFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.exp-header,
+.exp-gantt,
+.exp-body {
+  position: relative;
+  z-index: 1;
+  animation: expFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.exp-gantt { animation-delay: 0.1s; }
+.exp-body { animation-delay: 0.2s; }
+
 /* ── Header ── */
 .exp-header {
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 64px;
-  position: relative;
-  z-index: 1;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.exp-header.visible {
-  opacity: 1;
-  transform: translateY(0);
+  margin: 0 auto 48px;
 }
 
 .exp-header-badge {
@@ -318,162 +325,312 @@ p {
   margin: 0 auto;
 }
 
-/* ── List + rail ── */
-.exp-list {
-  position: relative;
-  z-index: 1;
-  list-style: none;
-  margin: 0 auto;
-  padding: 0;
-  max-width: 920px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
+/* ═══════════════════════════════════════════
+   TIMELINE (parallel tracks)
+   ═══════════════════════════════════════════ */
+
+.exp-gantt {
+  max-width: 980px;
+  margin: 0 auto 28px;
+  padding: 18px 24px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
 }
 
-.exp-list::before {
-  content: '';
+.exp-gantt-axis {
+  position: relative;
+  height: 18px;
+  margin-bottom: 10px;
+}
+
+.exp-gantt-tick {
   position: absolute;
-  left: 27px;
-  top: 28px;
-  bottom: 28px;
-  width: 2px;
+  top: 0;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+.exp-gantt-tick--now {
+  color: #4ade80;
+}
+
+.exp-gantt-rows {
+  position: relative;
+}
+
+.exp-gantt-line {
+  position: absolute;
+  top: -4px;
+  bottom: 4px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.exp-gantt-line--now {
+  background: repeating-linear-gradient(to bottom, rgba(74, 222, 128, 0.5) 0 4px, transparent 4px 8px);
+}
+
+.exp-gantt-row {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin: 0 0 8px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.exp-gantt-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #cbd5e1;
+  background: color-mix(in srgb, var(--exp-color) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--exp-color) 40%, transparent);
+  transition: background 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
+}
+
+/* Still running: fade out towards "Now" instead of a hard end */
+.exp-gantt-bar.is-ongoing {
+  border-right-color: transparent;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
   background: linear-gradient(
-    to bottom,
-    rgba(168, 85, 247, 0.4),
-    rgba(59, 130, 246, 0.4) 50%,
-    rgba(245, 158, 11, 0.3)
+    90deg,
+    color-mix(in srgb, var(--exp-color) 16%, transparent) 70%,
+    color-mix(in srgb, var(--exp-color) 4%, transparent)
   );
 }
 
-.exp-company {
-  position: relative;
+.exp-gantt-row:hover .exp-gantt-bar {
+  color: #f1f5f9;
+  background: color-mix(in srgb, var(--exp-color) 26%, transparent);
+}
+
+.exp-gantt-row.active .exp-gantt-bar {
+  color: #fff;
+  background: color-mix(in srgb, var(--exp-color) 38%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--exp-color) 30%, transparent);
+}
+
+/* ═══════════════════════════════════════════
+   TABS + PANEL
+   ═══════════════════════════════════════════ */
+
+.exp-body {
+  max-width: 980px;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-columns: 260px minmax(0, 1fr);
   gap: 24px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--exp-index) * 0.12s);
+  align-items: start;
 }
 
-.exp-company.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ── Company logo on the rail ── */
-.exp-logo {
-  position: relative;
-  z-index: 1;
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+.exp-tabs {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #111127;
-  border: 1px solid color-mix(in srgb, var(--exp-color) 45%, transparent);
-  color: var(--exp-color);
-  font-size: 22px;
-  box-shadow: 0 0 24px color-mix(in srgb, var(--exp-color) 25%, transparent);
+  flex-direction: column;
+  gap: 6px;
 }
 
-.exp-logo-text {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-
-/* ── Card ── */
-.exp-card {
+.exp-tab {
   position: relative;
-  overflow: hidden;
-  background: linear-gradient(145deg, #111127, #0d0d22);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 26px 28px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 16px 14px 20px;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-/* Accent bar in the company colour */
-.exp-card::before {
+.exp-tab::before {
   content: '';
   position: absolute;
   left: 0;
-  top: 0;
-  bottom: 0;
+  top: 14px;
+  bottom: 14px;
   width: 3px;
+  border-radius: 3px;
   background: var(--exp-color);
-  opacity: 0.7;
+  opacity: 0.25;
+  transition: opacity 0.2s ease;
 }
 
-.exp-card:hover {
-  border-color: color-mix(in srgb, var(--exp-color) 30%, transparent);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.3),
-    0 0 30px color-mix(in srgb, var(--exp-color) 8%, transparent);
+.exp-tab:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
-/* ── Company header ── */
-.exp-company-head {
+.exp-tab.active {
+  background: linear-gradient(145deg, #111127, #0d0d22);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+.exp-tab.active::before {
+  opacity: 1;
+}
+
+.exp-tab:focus-visible {
+  outline: 2px solid var(--exp-color);
+  outline-offset: 2px;
+}
+
+.exp-tab-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.exp-tab.active .exp-tab-title {
+  color: #f1f5f9;
+}
+
+.exp-tab-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: expPulse 2s ease-in-out infinite;
+}
+
+.exp-tab-company {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--exp-color);
+}
+
+.exp-tab-dates {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Panel ── */
+@keyframes expPanelIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.exp-panel {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 30px;
+  background: linear-gradient(145deg, #111127, #0d0d22);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  animation: expPanelIn 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.exp-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--exp-color), transparent 80%);
+}
+
+.exp-panel-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  padding-bottom: 20px;
-  margin-bottom: 22px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 16px;
 }
 
-.exp-company-name {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.exp-panel-title {
   margin: 0;
-  font-size: 21px;
+  font-size: 22px;
   font-weight: 800;
+  line-height: 1.3;
   letter-spacing: -0.3px;
   color: #f1f5f9;
 }
 
-.exp-company-link {
-  display: inline-flex;
-  font-size: 11px;
-  color: #64748b;
-  transition: color 0.2s ease;
+.exp-panel-at {
+  color: #475569;
+  font-weight: 600;
 }
 
-.exp-company-link:hover {
+.exp-panel-company {
   color: var(--exp-color);
+  text-decoration: none;
+  /* Keep the name and its link icon together when the title wraps */
+  white-space: nowrap;
+}
+
+/* Tailwind's preflight makes svg display:block, which forces a line break */
+a.exp-panel-company svg {
+  display: inline-block;
+  vertical-align: baseline;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+a.exp-panel-company:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
 /* The global "p" rule above adds margin and a max-width: reset it on every p here */
-.exp-company-meta,
-.exp-role-dates,
-.exp-role-summary {
+.exp-panel-dates,
+.exp-panel-summary {
   max-width: none;
 }
 
-.exp-company-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px;
+.exp-panel-dates {
   margin: 6px 0 0;
   font-size: 13px;
   color: #64748b;
+  font-variant-numeric: tabular-nums;
 }
 
-.exp-meta-sep {
-  color: #334155;
-  margin: 0 2px;
+.exp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.exp-badge {
+  padding: 4px 11px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--exp-color);
+  background: color-mix(in srgb, var(--exp-color) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--exp-color) 28%, transparent);
 }
 
 .exp-current {
-  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -501,122 +658,36 @@ p {
   50% { box-shadow: 0 0 0 5px rgba(34, 197, 94, 0); }
 }
 
-/* ── Roles ── */
-.exp-role {
-  position: relative;
-}
-
-.exp-role + .exp-role {
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.07);
-}
-
-/* Several roles at one company: a dot marks each one */
-.exp-roles--multi .exp-role {
-  padding-left: 22px;
-}
-
-.exp-roles--multi .exp-role::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 7px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--exp-color);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--exp-color) 18%, transparent);
-}
-
-.exp-roles--multi .exp-role + .exp-role::before {
-  top: 31px;
-}
-
-.exp-role-head {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.exp-role-title {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  color: #e2e8f0;
-}
-
-.exp-role-type {
-  padding: 2px 9px;
-  border-radius: 100px;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: var(--exp-color);
-  background: color-mix(in srgb, var(--exp-color) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--exp-color) 25%, transparent);
-}
-
-.exp-role-dates {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin: 6px 0 12px;
-  font-size: 13px;
-  color: #64748b;
-  font-variant-numeric: tabular-nums;
-}
-
-.exp-role-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: #a5b4fc;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.exp-role-link svg {
-  font-size: 9px;
-}
-
-.exp-role-link:hover {
-  color: var(--exp-color);
-}
-
-.exp-role-summary {
-  margin: 0 0 14px;
-  font-size: 14px;
+.exp-panel-summary {
+  margin: 0 0 18px;
+  font-size: 15px;
   line-height: 1.7;
   color: #94a3b8;
 }
 
-.exp-role-highlights {
+.exp-highlights {
   list-style: none;
-  margin: 0 0 16px;
+  margin: 0 0 20px;
   padding: 0;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
-.exp-role-highlights li {
+.exp-highlights li {
   position: relative;
-  padding-left: 18px;
-  font-size: 13.5px;
-  line-height: 1.6;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 1.65;
   color: #cbd5e1;
 }
 
-.exp-role-highlights li::before {
+.exp-highlights li::before {
   content: '';
   position: absolute;
   left: 2px;
-  top: 0.6em;
-  width: 6px;
-  height: 6px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
   border-radius: 2px;
   background: var(--exp-color);
   transform: rotate(45deg);
@@ -630,9 +701,9 @@ p {
 }
 
 .exp-skill {
-  padding: 3px 10px;
+  padding: 4px 11px;
   border-radius: 100px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
   color: #a5b4fc;
   background: rgba(255, 255, 255, 0.03);
@@ -645,80 +716,134 @@ p {
   border-color: color-mix(in srgb, var(--exp-color) 45%, transparent);
 }
 
+/* ── Actions ── */
+.exp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.exp-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exp-action svg {
+  font-size: 11px;
+}
+
+.exp-action:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--exp-color) 45%, transparent);
+}
+
+.exp-action--primary {
+  color: #fff;
+  background: linear-gradient(135deg, #a855f7, #3b82f6);
+  border-color: transparent;
+}
+
+.exp-action--primary:hover {
+  border-color: transparent;
+  box-shadow: 0 10px 26px rgba(168, 85, 247, 0.3);
+}
+
 /* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */
 
-@media (max-width: 700px) {
+@media (max-width: 800px) {
   .exp-section {
     padding: 60px 16px 80px;
   }
 
   .exp-header {
-    margin-bottom: 44px;
+    margin-bottom: 36px;
   }
 
-  .exp-list {
-    gap: 22px;
+  .exp-gantt {
+    padding: 14px 14px 8px;
   }
 
-  .exp-list::before {
-    left: 19px;
-    top: 20px;
+  .exp-gantt-bar {
+    padding: 0 7px;
+    font-size: 10.5px;
   }
 
-  .exp-company {
-    grid-template-columns: 40px minmax(0, 1fr);
-    gap: 12px;
+  .exp-body {
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
-  .exp-logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    font-size: 16px;
+  /* Tabs become a horizontal strip above the panel */
+  .exp-tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 4px;
   }
 
-  .exp-logo-text {
-    font-size: 9px;
+  .exp-tab {
+    flex: 0 0 auto;
+    min-width: 170px;
+    scroll-snap-align: start;
+    border-color: rgba(255, 255, 255, 0.05);
   }
 
-  .exp-card {
-    padding: 20px 18px;
+  .exp-panel {
+    padding: 22px 18px;
     border-radius: 16px;
   }
 
-  .exp-company-head {
+  .exp-panel-head {
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
   }
 
-  .exp-company-name {
-    font-size: 18px;
+  .exp-badges {
+    justify-content: flex-start;
   }
 
-  .exp-role-title {
-    font-size: 15px;
+  .exp-panel-title {
+    font-size: 19px;
   }
 
-  .exp-role-summary {
+  .exp-panel-summary {
+    font-size: 14px;
+  }
+
+  .exp-highlights li {
     font-size: 13.5px;
-  }
-
-  .exp-role-highlights li {
-    font-size: 13px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .exp-company,
-  .exp-header {
-    transition: none;
+  .exp-header,
+  .exp-gantt,
+  .exp-body,
+  .exp-panel {
+    animation: none;
   }
 
   .exp-bg-grid,
   .exp-bg-orb,
-  .exp-current-dot {
+  .exp-current-dot,
+  .exp-tab-live {
     animation: none;
   }
 }

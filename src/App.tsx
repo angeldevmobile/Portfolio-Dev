@@ -58,7 +58,7 @@ const App: React.FC = () => {
         unmountOnExit
       >
         <div ref={experienceRef}>
-          <Experience />
+          <Experience setCurrentSection={setCurrentSection} />
         </div>
       </CSSTransition>
 
