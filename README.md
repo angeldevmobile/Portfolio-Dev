@@ -1,6 +1,6 @@
 # Portfolio — Angel Zapata
 
-Personal portfolio site. Full Stack Developer and AI Engineer.
+Personal portfolio site. Software Developer, creator of Orion Language and Flux.
 
 **Live:** https://portfolio-angel-dev.onrender.com
 
@@ -65,7 +65,8 @@ deploy is a single service instead of two.
 ## Featured project
 
 The one I would point at first is [**Orion**](https://github.com/angeldevmobile/Orion):
-a programming language for backend work and automation, written in Rust end to
+a programming language for backend work, automation and high-performance
+computing (HPC), written in Rust end to
 end. It compiles to bytecode with three execution backends sharing one frontend
 — a VM, a Cranelift JIT, and AOT compilation to a native binary — and ships as a
 single executable with 58 standard library modules, a VS Code extension and a

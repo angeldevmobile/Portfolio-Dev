@@ -338,9 +338,9 @@ const milestones: Milestone[] = [
 		color: "#22c55e",
 	},
 	{
-		year: "2024",
-		label: "Banking & AI",
-		description: "AI Engineer at BBVA, building intelligent systems",
+		year: "Nov 2024",
+		label: "Software Developer",
+		description: "Joined BBVA as a software developer, working on AI projects",
 		color: "#3b82f6",
 	},
 	{
@@ -444,7 +444,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 		"Full Stack Developer",
 		"Creator of Orion Language",
 		"Building Flux",
-		"AI Engineer",
+		"Software Developer at BBVA",
 		"Rust & TypeScript Developer",
 	]);
 
@@ -587,7 +587,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 						<ul className="hero-facts">
 							<li className="hero-fact">
 								<FaBriefcase className="hero-fact-icon" aria-hidden />
-								AI Engineer at <strong>BBVA Perú</strong>
+								Software Developer at <strong>BBVA Perú</strong>
 							</li>
 							<li className="hero-fact">
 								<FaCode className="hero-fact-icon" aria-hidden />
@@ -790,7 +790,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 							<h3 className="hero-proj-name">Orion Language</h3>
 							<p className="hero-proj-role">Language Designer & Core Developer</p>
 							<p className="hero-proj-desc">
-								Backend and automation language written in Rust: a bytecode VM, a Cranelift JIT and AOT native binaries, 58 built-in modules, plus an LSP and debugger for VS Code.
+								Backend, automation and HPC language written in Rust: a bytecode VM, a Cranelift JIT and AOT native binaries, 58 built-in modules, plus an LSP and debugger for VS Code.
 							</p>
 							<div className="hero-proj-tech">
 								{["Rust","Cranelift","Bytecode VM","LSP","DAP"].map((t) => (

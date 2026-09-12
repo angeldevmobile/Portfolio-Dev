@@ -1,298 +1,202 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { FaExternalLinkAlt, FaBriefcase, FaRocket, FaCode, FaCogs } from 'react-icons/fa';
-import frontend from '../assets/front_end.gif';
-import backend from '../assets/backend.gif';
-import automation from '../assets/automation.gif';
+import { FaExternalLinkAlt, FaBriefcase, FaCode, FaLaptopCode, FaMapMarkerAlt } from 'react-icons/fa';
 import './css/Experience.css';
 
-interface ExperienceItem {
-  role: string;
-  company: string;
-  companyUrl?: string;
-  date: string;
-  type: 'founder' | 'fulltime' | 'intern' | 'freelance';
-  description: string;
+type RoleType = 'Full-time' | 'Internship' | 'Independent' | 'Projects';
+
+interface Role {
+  title: string;
+  type: RoleType;
+  start: string; // "YYYY-MM", or "YYYY" when the month isn't known
+  end?: string; // omitted = present
+  link?: { label: string; url: string };
+  summary: string;
   highlights: string[];
   skills: string[];
-  image: string;
-  color: string;
 }
 
-/* ── SVG Animated Icons per role ── */
-const FounderSVG = () => (
-  <svg className="exp-svg-icon" viewBox="0 0 70 70" fill="none">
-    <defs>
-      <linearGradient id="founderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#a855f7" />
-        <stop offset="100%" stopColor="#ec4899" />
-      </linearGradient>
-      <filter id="founder3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="2" dy="3" stdDeviation="4" floodColor="#a855f7" floodOpacity="0.35" />
-      </filter>
-    </defs>
-    {/* Rocket body */}
-    <path d="M35 8 L28 35 L35 42 L42 35 Z" fill="url(#founderGrad)" filter="url(#founder3d)" />
-    <ellipse cx="35" cy="24" rx="5" ry="8" fill="#0a0a2e" opacity="0.5" />
-    <circle cx="35" cy="20" r="3" fill="#ec4899" opacity="0.8" />
-    {/* Flames */}
-    <path d="M30 40 L35 55 L40 40" fill="#f59e0b" opacity="0.7">
-      <animate attributeName="d" values="M30 40 L35 55 L40 40;M31 40 L35 52 L39 40;M30 40 L35 55 L40 40" dur="0.8s" repeatCount="indefinite" />
-    </path>
-    <path d="M32 42 L35 50 L38 42" fill="#ef4444" opacity="0.6">
-      <animate attributeName="d" values="M32 42 L35 50 L38 42;M33 42 L35 48 L37 42;M32 42 L35 50 L38 42" dur="0.6s" repeatCount="indefinite" />
-    </path>
-    {/* Stars */}
-    <circle cx="12" cy="14" r="1.5" fill="#c084fc" opacity="0.5">
-      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="58" cy="20" r="1" fill="#f9a8d4" opacity="0.4">
-      <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="20" cy="50" r="1.5" fill="#818cf8" opacity="0.3">
-      <animate attributeName="cy" values="50;46;50" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
+interface Company {
+  name: string;
+  url?: string;
+  location: string;
+  logo: React.ReactNode;
+  color: string;
+  current?: boolean;
+  roles: Role[];
+}
 
-const BackendSVG = () => (
-  <svg className="exp-svg-icon" viewBox="0 0 70 70" fill="none">
-    <defs>
-      <linearGradient id="beExpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3b82f6" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-      <filter id="beExp3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="2" dy="3" stdDeviation="4" floodColor="#3b82f6" floodOpacity="0.35" />
-      </filter>
-    </defs>
-    {/* Brain / AI */}
-    <circle cx="35" cy="28" r="18" fill="url(#beExpGrad)" filter="url(#beExp3d)" opacity="0.9" />
-    <circle cx="35" cy="28" r="12" fill="#0a0a2e" opacity="0.6" />
-    {/* Neural connections */}
-    <line x1="28" y1="24" x2="24" y2="18" stroke="#60a5fa" strokeWidth="1.5" opacity="0.6" />
-    <line x1="42" y1="24" x2="46" y2="18" stroke="#22d3ee" strokeWidth="1.5" opacity="0.6" />
-    <line x1="35" y1="20" x2="35" y2="12" stroke="#818cf8" strokeWidth="1.5" opacity="0.6" />
-    <circle cx="24" cy="18" r="2.5" fill="#60a5fa" opacity="0.5" />
-    <circle cx="46" cy="18" r="2.5" fill="#22d3ee" opacity="0.5" />
-    <circle cx="35" cy="12" r="2.5" fill="#818cf8" opacity="0.5" />
-    {/* Code brackets */}
-    <text x="28" y="32" fill="#60a5fa" fontSize="12" fontWeight="bold" opacity="0.8">{'<'}</text>
-    <text x="38" y="32" fill="#22d3ee" fontSize="12" fontWeight="bold" opacity="0.8">{'/>'}</text>
-    {/* Data flow */}
-    <rect x="22" y="50" width="26" height="3" rx="1.5" fill="url(#beExpGrad)" opacity="0.4" />
-    <rect x="28" y="55" width="14" height="3" rx="1.5" fill="url(#beExpGrad)" opacity="0.3" />
-    <circle cx="12" cy="40" r="1" fill="#60a5fa" opacity="0.3">
-      <animate attributeName="cy" values="40;36;40" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="58" cy="45" r="1.5" fill="#22d3ee" opacity="0.4">
-      <animate attributeName="cy" values="45;41;45" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const AutomationSVG = () => (
-  <svg className="exp-svg-icon" viewBox="0 0 70 70" fill="none">
-    <defs>
-      <linearGradient id="autoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#22c55e" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-      <filter id="auto3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="2" dy="3" stdDeviation="4" floodColor="#22c55e" floodOpacity="0.35" />
-      </filter>
-    </defs>
-    {/* Gear 1 */}
-    <circle cx="28" cy="26" r="12" fill="url(#autoGrad)" filter="url(#auto3d)" opacity="0.9">
-      <animateTransform attributeName="transform" type="rotate" from="0 28 26" to="360 28 26" dur="8s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="28" cy="26" r="6" fill="#0a0a2e" opacity="0.7" />
-    {/* Gear 2 */}
-    <circle cx="46" cy="40" r="9" fill="url(#autoGrad)" filter="url(#auto3d)" opacity="0.7">
-      <animateTransform attributeName="transform" type="rotate" from="360 46 40" to="0 46 40" dur="6s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="46" cy="40" r="4.5" fill="#0a0a2e" opacity="0.7" />
-    {/* Gear teeth (simplified) */}
-    <rect x="25" y="12" width="6" height="3" rx="1" fill="url(#autoGrad)" opacity="0.5">
-      <animateTransform attributeName="transform" type="rotate" from="0 28 26" to="360 28 26" dur="8s" repeatCount="indefinite" />
-    </rect>
-    {/* Arrow / flow */}
-    <path d="M16 52 L30 52 L28 48 L36 54 L28 60 L30 56 L16 56 Z" fill="#34d399" opacity="0.5" />
-    <circle cx="10" cy="18" r="1" fill="#34d399" opacity="0.4">
-      <animate attributeName="cy" values="18;14;18" dur="2.8s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="60" cy="22" r="1.5" fill="#22d3ee" opacity="0.3">
-      <animate attributeName="cy" values="22;18;22" dur="3.2s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const FrontendSVG = () => (
-  <svg className="exp-svg-icon" viewBox="0 0 70 70" fill="none">
-    <defs>
-      <linearGradient id="feExpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#f59e0b" />
-        <stop offset="100%" stopColor="#ef4444" />
-      </linearGradient>
-      <filter id="feExp3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="2" dy="3" stdDeviation="4" floodColor="#f59e0b" floodOpacity="0.35" />
-      </filter>
-    </defs>
-    {/* Monitor */}
-    <rect x="10" y="10" width="50" height="35" rx="4" fill="url(#feExpGrad)" filter="url(#feExp3d)" opacity="0.9" />
-    <rect x="14" y="14" width="42" height="25" rx="2" fill="#0a0a2e" opacity="0.8" />
-    {/* UI Elements */}
-    <rect x="18" y="18" width="18" height="3" rx="1" fill="#fbbf24" opacity="0.6" />
-    <rect x="18" y="24" width="12" height="2" rx="1" fill="#f87171" opacity="0.5" />
-    <rect x="18" y="29" width="16" height="2" rx="1" fill="#fbbf24" opacity="0.4" />
-    <rect x="40" y="18" width="12" height="16" rx="2" fill="#f59e0b" opacity="0.2" />
-    {/* Stand */}
-    <rect x="28" y="45" width="14" height="3" rx="1" fill="#78716c" opacity="0.5" />
-    <rect x="24" y="48" width="22" height="3" rx="1.5" fill="#78716c" opacity="0.4" />
-    <circle cx="8" cy="50" r="1" fill="#fbbf24" opacity="0.3">
-      <animate attributeName="cy" values="50;46;50" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="62" cy="12" r="1.5" fill="#f87171" opacity="0.4">
-      <animate attributeName="cy" values="12;8;12" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const svgMap: Record<string, React.ReactNode> = {
-  founder: <FounderSVG />,
-  backend: <BackendSVG />,
-  automation: <AutomationSVG />,
-  frontend: <FrontendSVG />,
-};
-
-const typeLabels: Record<string, string> = {
-  founder: 'Founder & Lead',
-  fulltime: 'Full-time',
-  intern: 'Internship',
-  freelance: 'Freelance',
-};
-
-const typeIcons: Record<string, React.ReactNode> = {
-  founder: <FaRocket size={12} />,
-  fulltime: <FaBriefcase size={12} />,
-  intern: <FaCogs size={12} />,
-  freelance: <FaCode size={12} />,
-};
-
-const experiences: ExperienceItem[] = [
+const companies: Company[] = [
   {
-    role: 'Founder & Lead Developer',
-    company: 'Orion AI',
-    date: 'September 2025 – Present',
-    type: 'founder',
-    description:
-      'Founded and lead the development of Orion AI, an AI-powered platform integrating multiple LLM models (GPT-4, Claude, Gemini) with automation tools and intelligent workflows. Also designing the Orion programming language, a modern interpreted language with clean syntax and built-in concurrency.',
-    highlights: [
-      'Architected full-stack platform with React, TypeScript, Node.js, and PostgreSQL',
-      'Integrated OpenAI, Anthropic Claude, and Google Gemini APIs for multi-model AI orchestration',
-      'Designed & built Orion Language interpreter using Python, ANTLR4, and custom bytecode VM',
-      'Led product vision, technical architecture, and development roadmap',
-    ],
-    skills: ['React', 'TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'OpenAI', 'Claude', 'ANTLR4', 'Python', 'Docker'],
-    image: backend,
+    name: 'Independent',
+    location: 'Open-source developer tools',
+    logo: <FaCode />,
     color: '#a855f7',
+    current: true,
+    roles: [
+      {
+        title: 'Creator of Flux',
+        type: 'Independent',
+        start: '2026-05',
+        link: { label: 'fluxapi.dev', url: 'https://fluxapi.dev/' },
+        summary: 'Open-source desktop API client built with Tauri and Rust, a lightweight alternative to Postman.',
+        highlights: [
+          'Tests HTTP, WebSocket, SSE, gRPC and GraphQL from one native app that runs in under 30 MB of RAM',
+          'AI test generation, error debugging and failing-test fixes powered by Claude',
+          'Built-in load testing, local mock servers and a CLI runner for CI pipelines',
+          'Public beta v0.3.0, launched on Product Hunt',
+        ],
+        skills: ['Rust', 'Tauri', 'React', 'TypeScript', 'gRPC', 'Claude API'],
+      },
+      {
+        title: 'Creator of Orion Language',
+        type: 'Independent',
+        start: '2025',
+        link: { label: 'docs-orion.onrender.com', url: 'https://docs-orion.onrender.com/' },
+        summary: 'Programming language for backend work, automation and high-performance computing (HPC), written in Rust end to end.',
+        highlights: [
+          'Bytecode VM, Cranelift JIT and AOT native binaries, all sharing one frontend',
+          'HPC data engine: loads and aggregates 500k CSV rows ~2× faster than Python (~6× with its binary .odf format), with rayon-parallel aggregations',
+          'Linear algebra on nalgebra (LU, eigen, SVD) and a 24-qubit quantum circuit simulator',
+          'Ships as a single executable with 58 standard library modules',
+          'LSP and debugger (DAP) for VS Code, plus a browser playground',
+          'Public beta v0.4.0, launched on Product Hunt',
+        ],
+        skills: ['Rust', 'Cranelift', 'Bytecode VM', 'Rayon', 'nalgebra', 'LSP', 'DAP'],
+      },
+    ],
   },
   {
-    role: 'Backend Developer & AI Engineer',
-    company: 'BBVA Perú',
-    companyUrl: 'https://www.bbva.pe/',
-    date: 'January 2024 – Active',
-    type: 'fulltime',
-    description:
-      'Developed an AI-powered virtual assistant for internal banking operations, integrating Google Gemini LLM with DocumentAI for intelligent document extraction and validation. Built secure APIs for financial data processing and compliance workflows.',
-    highlights: [
-      'Built AI virtual assistant using Google Gemini for natural language understanding',
-      'Implemented DocumentAI pipeline for automated document extraction & validation',
-      'Developed secure REST APIs handling sensitive financial data with Flask',
-      'Collaborated in agile team; led AI integration strategy and mentored junior developers',
-    ],
-    skills: ['Python', 'Flask', 'Google Gemini', 'DocumentAI', 'REST APIs', 'JavaScript', 'Bootstrap', 'LLMs', 'Agile'],
-    image: backend,
+    name: 'BBVA Perú',
+    url: 'https://www.bbva.pe/',
+    location: 'Banking · Perú',
+    logo: <span className="exp-logo-text">BBVA</span>,
     color: '#3b82f6',
+    current: true,
+    roles: [
+      {
+        title: 'Software Developer',
+        type: 'Full-time',
+        start: '2024-11',
+        summary:
+          'Software development for internal banking operations, including AI projects: a virtual assistant built on Google Gemini with DocumentAI for document extraction and validation, and secure APIs for financial data and compliance workflows.',
+        highlights: [
+          'Built an AI virtual assistant using Google Gemini for natural language understanding',
+          'Implemented a DocumentAI pipeline for automated document extraction and validation',
+          'Developed secure REST APIs with Flask for sensitive financial data',
+          'Worked in an agile team, leading the AI integration strategy and mentoring junior developers',
+        ],
+        skills: ['Python', 'Flask', 'Google Gemini', 'DocumentAI', 'REST APIs', 'LLMs', 'Agile'],
+      },
+      {
+        title: 'Automation Developer',
+        type: 'Internship',
+        start: '2023-12',
+        end: '2024-11',
+        summary:
+          'Automation for banking operations: dashboards, reporting pipelines and notification systems for real-time KPI tracking.',
+        highlights: [
+          'Cut manual workload by 60%, saving 100+ work hours per month',
+          'Built interactive dashboards for data visualization and KPI monitoring',
+          'Automated report extraction from legacy terminals to Excel and Google Sheets',
+          'Developed automated email notifications with Apps Script and Python',
+        ],
+        skills: ['Python', 'AutoHotkey', 'VBA', 'Apps Script', 'Excel', 'Google Sheets'],
+      },
+    ],
   },
   {
-    role: 'Automation Developer',
-    company: 'BBVA Perú',
-    companyUrl: 'https://www.bbva.pe/',
-    date: 'December 2023 – November 2024',
-    type: 'intern',
-    description:
-      'Designed and implemented enterprise automation solutions for banking operations, reducing manual workload by 60%. Built data dashboards, automated reporting pipelines, and email notification systems for real-time KPI tracking.',
-    highlights: [
-      'Automated repetitive banking tasks, saving 100+ work hours per month',
-      'Built interactive dashboards for data visualization and KPI monitoring',
-      'Created automated report extraction pipelines from legacy terminals to Excel/Sheets',
-      'Developed automated email notification systems with App Script and Python',
-    ],
-    skills: ['Python', 'AutoHotkey', 'VBA', 'App Script', 'Excel', 'Google Sheets', 'Dashboards', 'KPIs'],
-    image: automation,
-    color: '#22c55e',
-  },
-  {
-    role: 'Full Stack Developer',
-    company: 'Personal & University Projects',
-    date: 'March 2023 – Active',
-    type: 'freelance',
-    description:
-      'Built multiple full-stack web applications including e-commerce platforms, music streaming apps, and portfolio websites. Developed both frontend interfaces with React/Flutter and backend APIs with Spring Boot and Node.js.',
-    highlights: [
-      'Built e-commerce platform with product search, cart system, and admin dashboard',
-      'Developed cross-platform music streaming app with React Native and Firebase',
-      'Created responsive web interfaces using React, Tailwind CSS, and TypeScript',
-      'Designed and implemented REST APIs with Spring Boot, Node.js, and MySQL',
-    ],
-    skills: ['React', 'Flutter', 'TypeScript', 'Spring Boot', 'Node.js', 'MySQL', 'Firebase', 'Tailwind', 'Figma'],
-    image: frontend,
+    name: 'Personal & University Projects',
+    location: 'Web and mobile',
+    logo: <FaLaptopCode />,
     color: '#f59e0b',
+    roles: [
+      {
+        title: 'Full Stack Developer',
+        type: 'Projects',
+        start: '2023-03',
+        summary:
+          'Full-stack web and mobile apps, from e-commerce platforms to music streaming, with React and Flutter frontends and Spring Boot and Node.js backends.',
+        highlights: [
+          'E-commerce platform with product search, cart and admin dashboard',
+          'Cross-platform music streaming app with React Native and Firebase',
+          'REST APIs with Spring Boot, Node.js and MySQL',
+        ],
+        skills: ['React', 'Flutter', 'TypeScript', 'Spring Boot', 'Node.js', 'MySQL', 'Firebase'],
+      },
+    ],
   },
 ];
 
+/* ── Dates ── */
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const formatDate = (ym?: string) => {
+  if (!ym) return 'Present';
+  const [y, m] = ym.split('-').map(Number);
+  return m ? `${MONTHS[m - 1]} ${y}` : `${y}`;
+};
+
+// Inclusive month count, like LinkedIn. Null when a date has no month.
+const monthsBetween = (start: string, end?: string) => {
+  const [sy, sm] = start.split('-').map(Number);
+  const now = new Date();
+  const [ey, em] = end ? end.split('-').map(Number) : [now.getFullYear(), now.getMonth() + 1];
+  if (!sm || !em) return null;
+  return (ey - sy) * 12 + (em - sm) + 1;
+};
+
+const formatDuration = (months: number | null) => {
+  if (months === null) return '';
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  const parts = [];
+  if (y) parts.push(`${y} yr${y > 1 ? 's' : ''}`);
+  if (m) parts.push(`${m} mo${m > 1 ? 's' : ''}`);
+  return parts.join(' ');
+};
+
+const companySpan = (roles: Role[]) => {
+  const start = roles.map((r) => r.start).sort()[0];
+  const end = roles.some((r) => !r.end) ? undefined : roles.map((r) => r.end as string).sort().reverse()[0];
+  return { start, end };
+};
+
 const Experience: React.FC = () => {
   const [headerVisible, setHeaderVisible] = useState(false);
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(experiences.length).fill(false));
-  const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+  const [visible, setVisible] = useState<boolean[]>(new Array(companies.length).fill(false));
   const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const itemsRef = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
-    const options = { threshold: 0.12, rootMargin: '0px 0px -40px 0px' };
+    const options = { threshold: 0.1, rootMargin: '0px 0px -40px 0px' };
 
     const headerObs = new IntersectionObserver((entries) => {
       entries.forEach((e) => {
         if (e.isIntersecting) setHeaderVisible(true);
       });
     }, options);
-
     if (headerRef.current) headerObs.observe(headerRef.current);
 
-    const cardObs = new IntersectionObserver((entries) => {
+    const itemObs = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const idx = cardsRef.current.indexOf(entry.target as HTMLDivElement);
-          if (idx !== -1) {
-            setTimeout(() => {
-              setVisibleCards((prev) => {
-                const next = [...prev];
-                next[idx] = true;
-                return next;
-              });
-            }, idx * 180);
-          }
-        }
+        if (!entry.isIntersecting) return;
+        const idx = itemsRef.current.indexOf(entry.target as HTMLLIElement);
+        if (idx === -1) return;
+        setVisible((prev) => {
+          const next = [...prev];
+          next[idx] = true;
+          return next;
+        });
       });
     }, options);
-
-    cardsRef.current.forEach((c) => {
-      if (c) cardObs.observe(c);
+    itemsRef.current.forEach((el) => {
+      if (el) itemObs.observe(el);
     });
 
     return () => {
       headerObs.disconnect();
-      cardObs.disconnect();
+      itemObs.disconnect();
     };
   }, []);
 
@@ -313,115 +217,121 @@ const Experience: React.FC = () => {
           Where I've <span className="exp-gradient-text">Worked</span>
         </h2>
         <p className="exp-subtitle">
-          From founding an AI startup to building enterprise banking solutions: my journey across full-stack development, AI engineering, and automation.
+          From automating banking operations to shipping my own developer tools: software development,
+          AI projects and language design.
         </p>
       </div>
 
-      {/* Timeline */}
-      <div className="exp-timeline">
-        <div className="exp-timeline-line" />
+      {/* Companies */}
+      <ol className="exp-list">
+        {companies.map((company, index) => {
+          const span = companySpan(company.roles);
+          const total = formatDuration(monthsBetween(span.start, span.end));
 
-        {experiences.map((exp, index) => (
-          <div
-            key={index}
-            ref={(el) => {
-              cardsRef.current[index] = el;
-            }}
-            className={`exp-card-wrapper ${index % 2 === 0 ? 'left' : 'right'} ${visibleCards[index] ? 'visible' : ''}`}
-            style={{ '--exp-index': index, '--exp-color': exp.color } as React.CSSProperties}
-          >
-            {/* Timeline node */}
-            <div className="exp-timeline-node">
-              <div className="exp-node-inner">
-                {typeIcons[exp.type]}
-              </div>
-              <div className="exp-node-ping" />
-            </div>
-
-            {/* Card */}
-            <div
-              className={`exp-card ${expandedIdx === index ? 'expanded' : ''}`}
-              onClick={() => setExpandedIdx(expandedIdx === index ? null : index)}
+          return (
+            <li
+              key={company.name}
+              ref={(el) => {
+                itemsRef.current[index] = el;
+              }}
+              className={`exp-company ${visible[index] ? 'visible' : ''}`}
+              style={{ '--exp-color': company.color, '--exp-index': index } as React.CSSProperties}
             >
-              <div className="exp-card-glow" />
-              <div className="exp-card-inner">
-                {/* SVG */}
-                <div className="exp-card-svg">
-                  {svgMap[exp.type === 'founder' ? 'founder' : exp.type === 'fulltime' ? 'backend' : exp.type === 'intern' ? 'automation' : 'frontend']}
-                </div>
-
-                {/* Image */}
-                <div className="exp-card-image">
-                  <img src={exp.image} alt={exp.role} />
-                  <div className="exp-image-overlay" />
-                </div>
-
-                {/* Header row */}
-                <div className="exp-card-header">
-                  <div className="exp-card-meta">
-                    <span className="exp-card-type" style={{ '--type-color': exp.color } as React.CSSProperties}>
-                      {typeIcons[exp.type]}
-                      {typeLabels[exp.type]}
-                    </span>
-                    <span className="exp-card-date">{exp.date}</span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <h3 className="exp-card-role">{exp.role}</h3>
-                <div className="exp-card-company-row">
-                  <span className="exp-card-company">{exp.company}</span>
-                  {exp.companyUrl && (
-                    <a
-                      href={exp.companyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="exp-company-link"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FaExternalLinkAlt size={10} />
-                    </a>
-                  )}
-                </div>
-
-                <p className="exp-card-description">{exp.description}</p>
-
-                {/* Highlights */}
-                <div className={`exp-highlights ${expandedIdx === index ? 'show' : ''}`}>
-                  <div className="exp-highlights-label">Key Achievements</div>
-                  <ul className="exp-highlights-list">
-                    {exp.highlights.map((h, i) => (
-                      <li key={i} className="exp-highlight-item">
-                        <span className="exp-highlight-dot" style={{ background: exp.color }} />
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Skills */}
-                <div className="exp-skills-row">
-                  {exp.skills.map((skill) => (
-                    <span
-                      key={skill}
-                      className="exp-skill-tag"
-                      style={{ '--tag-color': exp.color } as React.CSSProperties}
-                    >
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Expand hint */}
-                <div className="exp-expand-hint">
-                  {expandedIdx === index ? 'Click to collapse' : 'Click for details'}
-                  <span className={`exp-expand-arrow ${expandedIdx === index ? 'rotated' : ''}`}>›</span>
-                </div>
+              <div className="exp-logo" aria-hidden>
+                {company.logo}
               </div>
-            </div>
-          </div>
-        ))}
-      </div>
+
+              <article className="exp-card">
+                <header className="exp-company-head">
+                  <div>
+                    <h3 className="exp-company-name">
+                      {company.name}
+                      {company.url && (
+                        <a
+                          href={company.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="exp-company-link"
+                          aria-label={`${company.name} website`}
+                        >
+                          <FaExternalLinkAlt />
+                        </a>
+                      )}
+                    </h3>
+                    <p className="exp-company-meta">
+                      <FaMapMarkerAlt aria-hidden />
+                      {company.location}
+                      {/* With a single role the dates already sit on the role itself */}
+                      {company.roles.length > 1 && (
+                        <>
+                          <span className="exp-meta-sep">·</span>
+                          {formatDate(span.start)} – {formatDate(span.end)}
+                          {total && (
+                            <>
+                              <span className="exp-meta-sep">·</span>
+                              {total}
+                            </>
+                          )}
+                        </>
+                      )}
+                    </p>
+                  </div>
+                  {company.current && (
+                    <span className="exp-current">
+                      <span className="exp-current-dot" />
+                      Current
+                    </span>
+                  )}
+                </header>
+
+                <div className={`exp-roles ${company.roles.length > 1 ? 'exp-roles--multi' : ''}`}>
+                  {company.roles.map((role) => {
+                    const duration = formatDuration(monthsBetween(role.start, role.end));
+                    return (
+                      <div key={role.title} className="exp-role">
+                        <div className="exp-role-head">
+                          <h4 className="exp-role-title">{role.title}</h4>
+                          <span className="exp-role-type">{role.type}</span>
+                        </div>
+                        <p className="exp-role-dates">
+                          {formatDate(role.start)} – {formatDate(role.end)}
+                          {duration && ` · ${duration}`}
+                          {role.link && (
+                            <>
+                              <span className="exp-meta-sep">·</span>
+                              <a
+                                href={role.link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="exp-role-link"
+                              >
+                                {role.link.label} <FaExternalLinkAlt aria-hidden />
+                              </a>
+                            </>
+                          )}
+                        </p>
+                        <p className="exp-role-summary">{role.summary}</p>
+                        <ul className="exp-role-highlights">
+                          {role.highlights.map((h) => (
+                            <li key={h}>{h}</li>
+                          ))}
+                        </ul>
+                        <div className="exp-skills">
+                          {role.skills.map((skill) => (
+                            <span key={skill} className="exp-skill">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
     </section>
   );
 };

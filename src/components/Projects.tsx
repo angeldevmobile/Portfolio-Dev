@@ -234,7 +234,7 @@ const projects: Project[] = [
   {
     id: "orion",
     title: "Orion Language",
-    tagline: "A backend and automation language, written in Rust end to end",
+    tagline: "A language for backend, automation and HPC, written in Rust end to end",
     kind: "Programming Language",
     period: "2025 – Present",
     status: "Public Beta · v0.4.0",
@@ -247,6 +247,9 @@ const projects: Project[] = [
     highlights: [
       "Three execution backends: bytecode VM (no GIL), Cranelift JIT with VM fallback, and AOT to a native binary",
       "58 standard library modules: HTTP server and client, WebSockets, CSV / Excel, data frames, crypto, S3, SSH, Docker, LLMs and embeddings",
+      "HPC data engine: a columnar frame loads and aggregates 500k CSV rows ~2× faster than Python's csv module (~6× with the binary .odf format), with rayon-parallel aggregations",
+      "Streams 1M CSV rows into Postgres via COPY in ~1.2 s with a 13 MB RAM peak",
+      "Linear algebra on nalgebra (BLAS-style multiply, LU, solve, eigen, SVD) and a quantum circuit simulator up to 24 qubits",
       "Optional typing, native OOP, async / await and structured error handling",
       "Built-in tooling: REPL, watch mode, test runner, benchmarks and project scaffolding",
       "Package manager backed by a GitHub-based registry (orion --add / --publish)",
@@ -255,9 +258,9 @@ const projects: Project[] = [
     metrics: [
       { value: "3", label: "execution backends" },
       { value: "58", label: "stdlib modules" },
-      { value: "1", label: "binary, no runtime" },
+      { value: "~6×", label: "vs Python, columnar data" },
     ],
-    stack: ["Rust", "Cranelift", "Bytecode VM", "AOT Compilation", "Compiler Design", "LSP", "DAP", "Tokio"],
+    stack: ["Rust", "Cranelift", "Bytecode VM", "AOT Compilation", "Compiler Design", "Rayon", "nalgebra", "LSP", "DAP"],
     preview: "desktop",
     previewUrl: "ORION-LANGUAGE · VS Code",
     images: [
