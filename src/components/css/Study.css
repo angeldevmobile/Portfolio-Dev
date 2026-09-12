@@ -1,8 +1,8 @@
 /* ═══════════════════════════════════════════
-   EDUCATION SECTION - 3D Timeline Premium
+   EDUCATION SECTION
+   Featured degree on top, a grid of certifications below
    ═══════════════════════════════════════════ */
 
-/* ── Section ── */
 .study-section {
   position: relative;
   padding: 100px 40px 120px;
@@ -29,58 +29,70 @@
   100% { transform: translate(60px, 60px); }
 }
 
-/* Background orbs */
 .study-bg-orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(100px);
+  filter: blur(120px);
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.06;
 }
 
 .study-bg-orb-1 {
   width: 500px;
   height: 500px;
   background: #a855f7;
-  top: -100px;
+  top: -120px;
   right: -150px;
-  animation: orbFloat1 15s ease-in-out infinite;
+  animation: studyOrb1 18s ease-in-out infinite;
 }
 
 .study-bg-orb-2 {
-  width: 400px;
-  height: 400px;
-  background: #6366f1;
-  bottom: -100px;
-  left: -100px;
-  animation: orbFloat2 18s ease-in-out infinite;
+  width: 420px;
+  height: 420px;
+  background: #3b82f6;
+  bottom: -120px;
+  left: -120px;
+  animation: studyOrb2 22s ease-in-out infinite;
 }
 
-@keyframes orbFloat1 {
+@keyframes studyOrb1 {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(-40px, 40px); }
 }
 
-@keyframes orbFloat2 {
+@keyframes studyOrb2 {
   0%, 100% { transform: translate(0, 0); }
   50% { transform: translate(30px, -30px); }
+}
+
+/* Entrance: header, degree and certifications rise in sequence */
+@keyframes studyFadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.study-header,
+.edu-degree,
+.edu-certs-block {
+  position: relative;
+  z-index: 1;
+  animation: studyFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.edu-degree { animation-delay: 0.1s; }
+.edu-certs-block { animation-delay: 0.2s; }
+
+/* The global "p" rule in Experience.css adds margin and a max-width: reset it on every p here */
+.study-section p {
+  max-width: none;
+  margin: 0;
 }
 
 /* ── Header ── */
 .study-header {
   text-align: center;
   max-width: 700px;
-  margin: 0 auto 80px;
-  position: relative;
-  z-index: 1;
-  opacity: 0;
-  transform: translateY(40px);
-  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.study-header.visible {
-  opacity: 1;
-  transform: translateY(0);
+  margin: 0 auto 48px;
 }
 
 .study-header-badge {
@@ -108,441 +120,397 @@
 }
 
 .study-gradient-text {
-  background: linear-gradient(135deg, #a855f7, #6366f1, #ec4899);
+  background: linear-gradient(135deg, #a855f7, #3b82f6, #06b6d4);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.study-subtitle {
+.study-section .study-subtitle {
   font-size: 17px;
   color: #94a3b8;
   line-height: 1.7;
-  max-width: 560px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-/* ═══════════════════════════════════════════
-   TIMELINE LAYOUT
-   ═══════════════════════════════════════════ */
-
-.study-timeline {
-  position: relative;
-  max-width: 1100px;
-  margin: 0 auto;
-  z-index: 1;
-}
-
-/* Center line */
-.timeline-line {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(168, 85, 247, 0.3) 10%,
-    rgba(99, 102, 241, 0.3) 90%,
-    transparent
-  );
-  transform: translateX(-50%);
-}
-
-/* ── Card Wrapper ── */
-.study-card-wrapper {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 48px;
-  opacity: 0;
-  transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--card-index) * 0.15s);
-}
-
-.study-card-wrapper.visible {
-  opacity: 1;
-}
-
-/* Left card */
-.study-card-wrapper.left {
-  justify-content: flex-start;
-  padding-right: calc(50% + 40px);
-  transform: translateX(-60px) rotateY(6deg);
-}
-
-.study-card-wrapper.left.visible {
-  transform: translateX(0) rotateY(0deg);
-}
-
-/* Right card */
-.study-card-wrapper.right {
-  justify-content: flex-end;
-  padding-left: calc(50% + 40px);
-  transform: translateX(60px) rotateY(-6deg);
-}
-
-.study-card-wrapper.right.visible {
-  transform: translateX(0) rotateY(0deg);
-}
-
-/* ── Timeline Node ── */
-.timeline-node {
-  position: absolute;
-  left: 50%;
-  top: 24px;
-  transform: translateX(-50%);
-  z-index: 5;
-}
-
-.timeline-node-inner {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--card-color), rgba(99, 102, 241, 0.8));
+/* ── Shared bits ── */
+.edu-logo {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  border: 3px solid #0a0a1a;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
-  position: relative;
-  z-index: 2;
-}
-
-.timeline-node-ping {
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid var(--card-color);
-  animation: nodePing 2.5s ease-in-out infinite;
-}
-
-@keyframes nodePing {
-  0%, 100% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.4); opacity: 0; }
-}
-
-/* ═══════════════════════════════════════════
-   CARD
-   ═══════════════════════════════════════════ */
-
-.study-card {
-  display: block;
-  position: relative;
-  text-decoration: none;
-  color: inherit;
-  width: 100%;
-  perspective: 800px;
-}
-
-.study-card-glow {
-  position: absolute;
-  inset: -1px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--card-color), transparent, var(--card-color));
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  filter: blur(1px);
-  z-index: 0;
-}
-
-.study-card:hover .study-card-glow {
-  opacity: 0.4;
-}
-
-.study-card-inner {
-  position: relative;
-  background: linear-gradient(145deg, #111127, #0d0d22);
-  border: 1px solid rgba(168, 85, 247, 0.08);
-  border-radius: 20px;
-  padding: 28px;
-  z-index: 1;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
   overflow: hidden;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-.study-card:hover .study-card-inner {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow:
-    0 20px 50px rgba(168, 85, 247, 0.12),
-    0 8px 20px rgba(0, 0, 0, 0.3);
-  border-color: rgba(168, 85, 247, 0.15);
-}
-
-/* ── SVG Icon ── */
-.study-card-svg {
-  position: absolute;
-  top: -10px;
-  right: 12px;
-  width: 56px;
-  height: 56px;
-  z-index: 3;
-  filter: drop-shadow(0 4px 10px rgba(168, 85, 247, 0.25));
-  transition: transform 0.4s ease;
-}
-
-.study-card:hover .study-card-svg {
-  transform: translateY(-4px) rotate(3deg) scale(1.1);
-}
-
-.edu-svg-icon {
+/* contain, not cover: logos must never be cropped */
+.edu-logo img {
   width: 100%;
   height: 100%;
+  object-fit: contain;
+  padding: 6px;
 }
 
-/* ── Card Header ── */
-.study-card-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.study-card-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.06);
-  flex-shrink: 0;
-}
-
-.study-card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.study-card-type {
+.edu-status {
   display: inline-flex;
   align-items: center;
-  padding: 2px 10px;
+  gap: 6px;
+  padding: 4px 11px;
   border-radius: 100px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--type-color);
-  background: rgba(168, 85, 247, 0.08);
-  border: 1px solid rgba(168, 85, 247, 0.12);
-  width: fit-content;
-}
-
-.study-card-date {
-  font-size: 12px;
-  color: #64748b;
-  font-weight: 500;
-}
-
-/* ── Card Content ── */
-.study-card-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  letter-spacing: -0.3px;
-  color: #f1f5f9;
-  line-height: 1.3;
-}
-
-.study-card-institution {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-bottom: 2px;
-}
-
-.study-card-subtitle {
-  font-size: 13px;
-  color: var(--card-color);
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-/* ── Grade Bar ── */
-.study-grade-wrapper {
-  margin-bottom: 16px;
-}
-
-.study-grade-label {
-  display: flex;
-  justify-content: space-between;
   font-size: 11px;
-  color: #64748b;
-  margin-bottom: 6px;
-  font-weight: 500;
-}
-
-.study-grade-value {
-  color: #e2e8f0;
   font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--status-color);
+  background: color-mix(in srgb, var(--status-color) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--status-color) 28%, transparent);
 }
 
-.study-grade-bar {
-  width: 100%;
+.edu-status::before {
+  content: '';
+  width: 6px;
   height: 6px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 100px;
-  overflow: hidden;
+  border-radius: 50%;
+  background: var(--status-color);
 }
 
-.study-grade-fill {
-  height: 100%;
-  border-radius: 100px;
-  width: 0%;
-  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: 0.5s;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
-}
+.edu-status--active { --status-color: #4ade80; }
+.edu-status--done { --status-color: #93c5fd; }
+.edu-status--progress { --status-color: #fbbf24; }
+.edu-status--expired { --status-color: #94a3b8; }
 
-/* ── Description ── */
-.study-card-description {
-  font-size: 13px;
-  color: #94a3b8;
-  line-height: 1.7;
-  margin-bottom: 16px;
-}
-
-/* ── Skills ── */
-.study-skills-row {
+.edu-skills {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 18px;
 }
 
-.study-skill-tag {
-  background: rgba(168, 85, 247, 0.06);
-  border: 1px solid rgba(168, 85, 247, 0.12);
-  color: #c4b5fd;
-  padding: 3px 10px;
+.edu-skill {
+  padding: 4px 11px;
   border-radius: 100px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  color: #c4b5fd;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.study-skill-tag:hover {
-  background: rgba(168, 85, 247, 0.12);
-  border-color: var(--tag-color);
-  color: #e2e8f0;
-  transform: translateY(-1px);
-}
-
-/* ── Card Footer ── */
-.study-card-footer {
-  padding-top: 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
-}
-
-.study-view-link {
+.edu-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
+  gap: 7px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--card-color);
-  transition: all 0.3s ease;
+  color: var(--edu-color);
+  text-decoration: none;
+  transition: gap 0.2s ease, opacity 0.2s ease;
 }
 
-.study-card:hover .study-view-link {
+/* Tailwind's preflight makes svg display:block */
+.edu-link svg {
+  display: inline-block;
+  font-size: 10px;
+}
+
+.edu-link:hover {
   gap: 10px;
+}
+
+/* ═══════════════════════════════════════════
+   DEGREE (featured)
+   ═══════════════════════════════════════════ */
+
+.edu-degree {
+  max-width: 980px;
+  margin: 0 auto 56px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: start;
+  padding: 32px 34px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #13132b, #0d0d22);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 22px;
+}
+
+.edu-degree::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--edu-color), #3b82f6 60%, transparent);
+}
+
+/* Soft glow in the degree colour behind the logo */
+.edu-degree::after {
+  content: '';
+  position: absolute;
+  top: -80px;
+  left: -60px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--edu-color) 18%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.edu-degree .edu-logo {
+  position: relative;
+  z-index: 1;
+  width: 84px;
+  height: 84px;
+  border-radius: 18px;
+}
+
+.edu-degree-body {
+  position: relative;
+  z-index: 1;
+}
+
+.edu-kicker {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--edu-color);
+}
+
+.edu-degree-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.4px;
+  color: #f1f5f9;
+}
+
+.study-section .edu-degree-school {
+  margin-bottom: 16px;
+  font-size: 15px;
+  color: #cbd5e1;
+}
+
+.edu-degree-school span {
+  color: #64748b;
+}
+
+.study-section .edu-degree-desc {
+  margin-bottom: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #94a3b8;
+}
+
+.edu-degree-aside {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  text-align: right;
+}
+
+.edu-period {
+  font-size: 14px;
+  font-weight: 600;
   color: #e2e8f0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════
+   CERTIFICATIONS
+   ═══════════════════════════════════════════ */
+
+.edu-certs-block {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.edu-certs-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.edu-certs-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+
+.edu-certs-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.edu-certs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.edu-cert {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 18px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #111127, #0d0d22);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.edu-cert::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--edu-color), transparent 85%);
+  opacity: 0.8;
+}
+
+.edu-cert:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--edu-color) 35%, transparent);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.3),
+    0 0 24px color-mix(in srgb, var(--edu-color) 10%, transparent);
+}
+
+.edu-cert-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+/* Issuer logos are wide lockups (logo + name): a square box shrinks them to nothing */
+.edu-cert .edu-logo {
+  width: 120px;
+  height: 52px;
+  border-radius: 12px;
+}
+
+.edu-cert .edu-logo img {
+  padding: 4px 8px;
+}
+
+.edu-cert-name {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #f1f5f9;
+}
+
+.study-section .edu-cert-issuer {
+  margin-bottom: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--edu-color);
+}
+
+.study-section .edu-cert-detail {
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+/* Issuers without an image asset get an icon in the same white box */
+.edu-logo > svg {
+  display: block;
+  font-size: 30px;
+}
+
+.edu-cert .edu-skills {
+  margin: 14px 0 16px;
+}
+
+.edu-cert .edu-skill {
+  font-size: 11.5px;
+}
+
+.edu-cert-foot {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */
 
-@media (max-width: 900px) {
+@media (max-width: 800px) {
   .study-section {
-    padding: 60px 20px 80px;
-  }
-
-  .study-timeline {
-    max-width: 100%;
-  }
-
-  /* Switch to single column */
-  .timeline-line {
-    left: 24px;
-  }
-
-  .timeline-node {
-    left: 24px;
-  }
-
-  .study-card-wrapper.left,
-  .study-card-wrapper.right {
-    padding-left: 60px;
-    padding-right: 0;
-    justify-content: flex-start;
-  }
-
-  .study-card-wrapper.left {
-    transform: translateX(-40px);
-  }
-
-  .study-card-wrapper.right {
-    transform: translateX(-40px);
-  }
-
-  .study-card-wrapper.left.visible,
-  .study-card-wrapper.right.visible {
-    transform: translateX(0) rotateY(0deg);
-  }
-
-  .study-card-svg {
-    width: 46px;
-    height: 46px;
-  }
-}
-
-@media (max-width: 600px) {
-  .study-section {
-    padding: 40px 16px 60px;
+    padding: 60px 16px 80px;
   }
 
   .study-header {
-    margin-bottom: 50px;
+    margin-bottom: 36px;
   }
 
-  .timeline-line {
-    left: 16px;
+  .edu-degree {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 18px;
+    padding: 24px 20px;
+    margin-bottom: 40px;
+    border-radius: 18px;
   }
 
-  .timeline-node {
-    left: 16px;
+  .edu-degree .edu-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
   }
 
-  .timeline-node-inner {
-    width: 30px;
-    height: 30px;
+  .edu-degree-title {
+    font-size: 21px;
   }
 
-  .study-card-wrapper.left,
-  .study-card-wrapper.right {
-    padding-left: 46px;
-    margin-bottom: 32px;
+  /* Dates and status drop under the text */
+  .edu-degree-aside {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .study-card-inner {
-    padding: 20px;
+  .edu-certs {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-header,
+  .edu-degree,
+  .edu-certs-block,
+  .study-bg-grid,
+  .study-bg-orb {
+    animation: none;
   }
 
-  .study-card-title {
-    font-size: 16px;
-  }
-
-  .study-card-svg {
-    width: 40px;
-    height: 40px;
-    top: -6px;
-    right: 8px;
-  }
-
-  .study-card-logo {
-    width: 40px;
-    height: 40px;
+  .edu-cert {
+    transition: none;
   }
 }
