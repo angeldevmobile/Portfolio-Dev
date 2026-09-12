@@ -19,7 +19,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 80px 40px 60px;
+  /* Extra room at the bottom so the stats row clears the scroll indicator */
+  padding: 80px 40px 120px;
 }
 
 .hero-starfield {
@@ -338,7 +339,79 @@
   color: #94a3b8;
   line-height: 1.8;
   max-width: 580px;
-  margin-bottom: 32px;
+  /* Anula el "p { margin: 0 auto }" global de Experience.css, que centraba la bio */
+  margin: 0 0 22px;
+}
+
+/* Facts — what I'm doing right now */
+.hero-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 32px;
+}
+
+.hero-fact {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 7px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.hero-fact strong {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.hero-fact-icon {
+  color: #a78bfa;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+/* Stats row */
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  justify-content: start;
+  gap: 16px 32px;
+  margin-top: 32px;
+  padding-top: 26px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  max-width: 660px;
+}
+
+.hero-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-stat-value {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
+  background: linear-gradient(135deg, #c4b5fd, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #64748b;
 }
 
 .hero-highlight {
@@ -791,7 +864,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
-  max-width: 1150px;
+  max-width: 920px;
   margin: 0 auto 70px;
   perspective: 1200px;
 }
@@ -924,6 +997,22 @@
   transition: all 0.3s ease;
 }
 
+.hero-ph-badge {
+  display: inline-block;
+  margin-top: 20px;
+  transition: transform 0.2s ease;
+}
+
+.hero-ph-badge:hover {
+  transform: translateY(-2px);
+}
+
+.hero-ph-badge img {
+  display: block;
+  width: auto;
+  height: 43px;
+}
+
 .hero-proj-tag:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #e2e8f0;
@@ -1036,6 +1125,20 @@
     justify-content: center;
   }
 
+  .hero-typed-wrapper,
+  .hero-facts,
+  .hero-stats {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    max-width: 100%;
+  }
+
+  .hero-stat {
+    align-items: center;
+  }
+
   .hero-journey,
   .hero-projects {
     padding: 60px 20px 80px;
@@ -1098,6 +1201,12 @@
     flex-shrink: 0;
   }
 
+  /* Same width for every year so "Dec 2023" doesn't push its card out of line */
+  .hero-ms-year {
+    min-width: 90px;
+    text-align: right;
+  }
+
   .hero-ms-content {
     max-width: 100%;
     flex: 1;
@@ -1126,6 +1235,25 @@
 
   .hero-bio {
     font-size: 15px;
+  }
+
+  .hero-fact {
+    font-size: 13px;
+  }
+
+  .hero-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .hero-stat-value {
+    font-size: 24px;
+  }
+
+  .hero-stat-label {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    text-align: center;
   }
 
   .hero-btn {

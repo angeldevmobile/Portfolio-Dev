@@ -1,6 +1,14 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { FaLinkedin, FaGithub, FaArrowDown } from "react-icons/fa";
-import { SiX } from "react-icons/si";
+import {
+	FaLinkedin,
+	FaGithub,
+	FaArrowDown,
+	FaBriefcase,
+	FaRocket,
+	FaCode,
+	FaGraduationCap,
+} from "react-icons/fa";
+import { SiProducthunt } from "react-icons/si";
 import profilePic from "../assets/perfil-github.png";
 import "./css/HeroSection.css";
 
@@ -138,235 +146,40 @@ const useStarfield = (canvasRef: React.RefObject<HTMLCanvasElement | null>) => {
    SVG ICONS
    ═══════════════════════════════════════════ */
 
-const OrionLogoSVG = () => (
+const FluxSVG = () => (
 	<svg className="hero-project-svg" viewBox="0 0 80 80" fill="none">
 		<defs>
-			<linearGradient id="orionHeroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-				<stop offset="0%" stopColor="#a855f7" />
-				<stop offset="50%" stopColor="#3b82f6" />
-				<stop offset="100%" stopColor="#06b6d4" />
+			<linearGradient id="fluxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+				<stop offset="0%" stopColor="#8b5cf6" />
+				<stop offset="100%" stopColor="#6366f1" />
 			</linearGradient>
-			<filter id="orionGlow" x="-50%" y="-50%" width="200%" height="200%">
-				<feGaussianBlur stdDeviation="3" result="blur" />
-				<feMerge>
-					<feMergeNode in="blur" />
-					<feMergeNode in="SourceGraphic" />
-				</feMerge>
-			</filter>
 		</defs>
-		{/* Outer ring */}
-		<circle
-			cx="40"
-			cy="40"
-			r="32"
-			stroke="url(#orionHeroGrad)"
-			strokeWidth="2"
-			fill="none"
-			opacity="0.6"
-			filter="url(#orionGlow)">
-			<animateTransform
-				attributeName="transform"
-				type="rotate"
-				from="0 40 40"
-				to="360 40 40"
-				dur="20s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		{/* Inner ring */}
-		<circle
-			cx="40"
-			cy="40"
-			r="22"
-			stroke="url(#orionHeroGrad)"
-			strokeWidth="1.5"
-			fill="none"
-			opacity="0.4"
-			strokeDasharray="6 4">
-			<animateTransform
-				attributeName="transform"
-				type="rotate"
-				from="360 40 40"
-				to="0 40 40"
-				dur="15s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		{/* Core */}
-		<circle
-			cx="40"
-			cy="40"
-			r="10"
-			fill="url(#orionHeroGrad)"
-			opacity="0.8"
-			filter="url(#orionGlow)">
-			<animate
-				attributeName="r"
-				values="10;12;10"
-				dur="3s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		<circle cx="40" cy="40" r="5" fill="#0a0a1a" opacity="0.6" />
-		{/* Orbital dots */}
-		<circle cx="40" cy="8" r="3" fill="#a855f7" opacity="0.8">
-			<animateTransform
-				attributeName="transform"
-				type="rotate"
-				from="0 40 40"
-				to="360 40 40"
-				dur="20s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		<circle cx="62" cy="40" r="2.5" fill="#3b82f6" opacity="0.7">
-			<animateTransform
-				attributeName="transform"
-				type="rotate"
-				from="120 40 40"
-				to="480 40 40"
-				dur="15s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		<circle cx="28" cy="62" r="2" fill="#06b6d4" opacity="0.6">
-			<animateTransform
-				attributeName="transform"
-				type="rotate"
-				from="240 40 40"
-				to="600 40 40"
-				dur="18s"
-				repeatCount="indefinite"
-			/>
-		</circle>
-		{/* Text O */}
-		<text
-			x="40"
-			y="44"
-			textAnchor="middle"
-			fill="#fff"
-			fontSize="14"
-			fontWeight="800"
-			opacity="0.9"
-			fontFamily="monospace">
-			O
-		</text>
-	</svg>
-);
-
-const JarvisSVG = () => (
-	<svg className="hero-project-svg" viewBox="0 0 80 80" fill="none">
-		<defs>
-			<linearGradient id="jarvisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-				<stop offset="0%" stopColor="#06b6d4" />
-				<stop offset="100%" stopColor="#22c55e" />
-			</linearGradient>
-			<filter id="jarvisGlow" x="-50%" y="-50%" width="200%" height="200%">
-				<feGaussianBlur stdDeviation="2" result="blur" />
-				<feMerge>
-					<feMergeNode in="blur" />
-					<feMergeNode in="SourceGraphic" />
-				</feMerge>
-			</filter>
-		</defs>
-		{/* Head outline */}
+		{/* App tile */}
+		<rect x="12" y="12" width="56" height="56" rx="14" fill="url(#fluxGrad)" opacity="0.9" />
+		{/* Request / response arrows */}
 		<path
-			d="M25 50 L25 30 Q25 16 40 16 Q55 16 55 30 L55 50 Q55 60 40 62 Q25 60 25 50 Z"
-			fill="none"
-			stroke="url(#jarvisGrad)"
-			strokeWidth="2"
-			filter="url(#jarvisGlow)"
+			d="M26 32 H50 M44 26 L50 32 L44 38"
+			stroke="#fff"
+			strokeWidth="3.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M54 48 H30 M36 42 L30 48 L36 54"
+			stroke="#fff"
+			strokeWidth="3.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 			opacity="0.8"
 		/>
-		{/* Eyes */}
-		<ellipse cx="33" cy="35" rx="4" ry="3" fill="#06b6d4" opacity="0.9">
-			<animate
-				attributeName="opacity"
-				values="0.9;0.3;0.9"
-				dur="3s"
-				repeatCount="indefinite"
-			/>
-		</ellipse>
-		<ellipse cx="47" cy="35" rx="4" ry="3" fill="#22c55e" opacity="0.9">
-			<animate
-				attributeName="opacity"
-				values="0.9;0.3;0.9"
-				dur="3s"
-				begin="0.3s"
-				repeatCount="indefinite"
-			/>
-		</ellipse>
-		{/* Eye details */}
-		<circle cx="34" cy="35" r="1.5" fill="#fff" opacity="0.6" />
-		<circle cx="48" cy="35" r="1.5" fill="#fff" opacity="0.6" />
-		{/* Mouth / speaker */}
-		<rect
-			x="34"
-			y="46"
-			width="12"
-			height="2"
-			rx="1"
-			fill="url(#jarvisGrad)"
-			opacity="0.5">
-			<animate
-				attributeName="width"
-				values="12;8;12"
-				dur="1.5s"
-				repeatCount="indefinite"
-			/>
-			<animate
-				attributeName="x"
-				values="34;36;34"
-				dur="1.5s"
-				repeatCount="indefinite"
-			/>
+		{/* Travelling packet */}
+		<circle cx="26" cy="32" r="2.5" fill="#ddd6fe">
+			<animate attributeName="cx" values="26;50;26" dur="2.4s" repeatCount="indefinite" />
+		</circle>
+		{/* Pulse ring */}
+		<rect x="12" y="12" width="56" height="56" rx="14" fill="none" stroke="#a78bfa" strokeWidth="1">
+			<animate attributeName="opacity" values="0.5;0;0.5" dur="2.4s" repeatCount="indefinite" />
 		</rect>
-		{/* Signal waves */}
-		<path
-			d="M58 28 Q64 32 58 36"
-			fill="none"
-			stroke="#22c55e"
-			strokeWidth="1.5"
-			opacity="0.4">
-			<animate
-				attributeName="opacity"
-				values="0.4;0;0.4"
-				dur="2s"
-				repeatCount="indefinite"
-			/>
-		</path>
-		<path
-			d="M62 24 Q72 32 62 40"
-			fill="none"
-			stroke="#06b6d4"
-			strokeWidth="1"
-			opacity="0.3">
-			<animate
-				attributeName="opacity"
-				values="0.3;0;0.3"
-				dur="2s"
-				begin="0.5s"
-				repeatCount="indefinite"
-			/>
-		</path>
-		{/* Antenna */}
-		<line
-			x1="40"
-			y1="16"
-			x2="40"
-			y2="8"
-			stroke="url(#jarvisGrad)"
-			strokeWidth="1.5"
-			opacity="0.5"
-		/>
-		<circle cx="40" cy="6" r="2.5" fill="url(#jarvisGrad)" opacity="0.7">
-			<animate
-				attributeName="r"
-				values="2.5;3.5;2.5"
-				dur="2s"
-				repeatCount="indefinite"
-			/>
-		</circle>
 	</svg>
 );
 
@@ -487,6 +300,19 @@ const OrionLangSVG = () => (
 	</svg>
 );
 
+/* Product Hunt "Featured" badge */
+const PHBadge = ({ url, postId, name }: { url: string; postId: string; name: string }) => (
+	<a href={url} target="_blank" rel="noopener noreferrer" className="hero-ph-badge">
+		<img
+			src={`https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${postId}&theme=dark`}
+			alt={`${name} on Product Hunt`}
+			width={200}
+			height={43}
+			loading="lazy"
+		/>
+	</a>
+);
+
 /* ═══════════════════════════════════════════
    JOURNEY MILESTONES
    ═══════════════════════════════════════════ */
@@ -506,23 +332,35 @@ const milestones: Milestone[] = [
 		color: "#f59e0b",
 	},
 	{
+		year: "Dec 2023",
+		label: "BBVA Internship",
+		description: "Automation developer intern at BBVA until November 2024",
+		color: "#22c55e",
+	},
+	{
 		year: "2024",
 		label: "Banking & AI",
-		description: "AI Engineer at BBVA — building intelligent systems",
+		description: "AI Engineer at BBVA, building intelligent systems",
 		color: "#3b82f6",
 	},
 	{
 		year: "2025",
-		label: "Orion AI",
-		description: "Founded Orion AI — creating the future",
-		color: "#a855f7",
-	},
-	{
-		year: "2025",
 		label: "Language Design",
-		description: "Building the Orion programming language",
+		description: "Started Orion, a programming language written in Rust",
 		color: "#ec4899",
 	},
+	{
+		year: "2026",
+		label: "Shipping Products",
+		description: "Launched Flux and Flux Learning",
+		color: "#a855f7",
+	},
+];
+
+const heroStats = [
+	{ value: "3+", label: "Years shipping software" },
+	{ value: "2", label: "Products in public beta" },
+	{ value: "58", label: "Stdlib modules in Orion" },
 ];
 
 /* ═══════════════════════════════════════════
@@ -603,11 +441,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 	useStarfield(canvasRef);
 
 	const typedText = useTypingEffect([
-		"Founder @ Orion AI",
 		"Full Stack Developer",
+		"Creator of Orion Language",
+		"Building Flux",
 		"AI Engineer",
-		"Language Designer",
-		"Building the Future",
+		"Rust & TypeScript Developer",
 	]);
 
 	// Load animation
@@ -739,13 +577,31 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 						</div>
 
 						<p className="hero-bio">
-							Building AI-powered platforms, creating programming languages, and
-							architecting scalable fintech solutions. Founder of{" "}
-							<span className="hero-highlight hero-highlight-purple">
-								Orion AI
-							</span>{" "}
-							— where intelligence meets innovation.
+							Building developer tools, designing a programming language in Rust,
+							and architecting scalable fintech solutions. Creator of{" "}
+							<span className="hero-highlight hero-highlight-purple">Flux</span> and{" "}
+							<span className="hero-highlight hero-highlight-purple">Orion</span>.
 						</p>
+
+						{/* Right now */}
+						<ul className="hero-facts">
+							<li className="hero-fact">
+								<FaBriefcase className="hero-fact-icon" aria-hidden />
+								AI Engineer at <strong>BBVA Perú</strong>
+							</li>
+							<li className="hero-fact">
+								<FaCode className="hero-fact-icon" aria-hidden />
+								Creator of <strong>Orion Language</strong>
+							</li>
+							<li className="hero-fact">
+								<FaRocket className="hero-fact-icon" aria-hidden />
+								Creator of <strong>Flux</strong>
+							</li>
+							<li className="hero-fact">
+								<FaGraduationCap className="hero-fact-icon" aria-hidden />
+								Systems &amp; Computer Engineering · <strong>UTP</strong>
+							</li>
+						</ul>
 
 						{/* CTAs */}
 						<div className="hero-ctas">
@@ -782,13 +638,24 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 								<FaGithub />
 							</a>
 							<a
-								href="https://x.com/"
+								href="https://www.producthunt.com/products/seam-4"
 								target="_blank"
 								rel="noopener noreferrer"
 								className="hero-social-link"
-								style={{ "--social-color": "#ffffff" } as React.CSSProperties}>
-								<SiX />
+								aria-label="Product Hunt"
+								style={{ "--social-color": "#DA552F" } as React.CSSProperties}>
+								<SiProducthunt />
 							</a>
+						</div>
+
+						{/* Numbers */}
+						<div className="hero-stats">
+							{heroStats.map((s) => (
+								<div key={s.label} className="hero-stat">
+									<span className="hero-stat-value">{s.value}</span>
+									<span className="hero-stat-label">{s.label}</span>
+								</div>
+							))}
 						</div>
 					</div>
 				</div>
@@ -864,87 +731,41 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 				</div>
 
 				<div className="hero-projects-grid">
-					{/* Orion AI */}
+					{/* Flux */}
 					<div
 						className="hero-project-card"
 						style={
 							{
-								"--proj-color-1": "#a855f7",
-								"--proj-color-2": "#3b82f6",
+								"--proj-color-1": "#8b5cf6",
+								"--proj-color-2": "#6366f1",
 							} as React.CSSProperties
 						}>
 						<div className="hero-proj-glow" />
 						<div className="hero-proj-inner">
 							<div className="hero-proj-svg-wrapper">
-								<OrionLogoSVG />
+								<FluxSVG />
 							</div>
 							<div className="hero-proj-status">
 								<span className="hero-proj-status-dot active" />
-								Active Development
+								Public Beta · v0.3.0
 							</div>
-							<h3 className="hero-proj-name">Orion AI Platform</h3>
-							<p className="hero-proj-role">Founder & Lead Developer</p>
+							<h3 className="hero-proj-name">Flux</h3>
+							<p className="hero-proj-role">Creator & Lead Developer</p>
 							<p className="hero-proj-desc">
-								AI-powered platform integrating GPT-4, Claude & Gemini with
-								automation tools and intelligent workflows for enterprise-grade
-								solutions.
+								Open-source desktop API client built with Tauri and Rust: HTTP, WebSocket, SSE, gRPC and GraphQL, with AI-generated tests, load testing and mock servers in under 30 MB of RAM.
 							</p>
 							<div className="hero-proj-tech">
-								{[
-									"React",
-									"TypeScript",
-									"Node.js",
-									"PostgreSQL",
-									"OpenAI",
-									"Claude",
-								].map((t) => (
+								{["Rust","Tauri","React","TypeScript","gRPC","Claude API"].map((t) => (
 									<span key={t} className="hero-proj-tag">
 										{t}
 									</span>
 								))}
 							</div>
-						</div>
-					</div>
-
-					{/* Jarvis AI */}
-					<div
-						className="hero-project-card"
-						style={
-							{
-								"--proj-color-1": "#06b6d4",
-								"--proj-color-2": "#22c55e",
-							} as React.CSSProperties
-						}>
-						<div className="hero-proj-glow" />
-						<div className="hero-proj-inner">
-							<div className="hero-proj-svg-wrapper">
-								<JarvisSVG />
-							</div>
-							<div className="hero-proj-status">
-								<span className="hero-proj-status-dot active" />
-								In Progress
-							</div>
-							<h3 className="hero-proj-name">Jarvis — Autonomous AI</h3>
-							<p className="hero-proj-role">AI Architect & Developer</p>
-							<p className="hero-proj-desc">
-								Autonomous AI assistant with voice control, task execution,
-								system automation, and multi-modal intelligence powered by
-								cutting-edge LLMs.
-							</p>
-							<div className="hero-proj-tech">
-								{[
-									"Python",
-									"LangChain",
-									"GPT-4",
-									"Whisper",
-									"FastAPI",
-									"Docker",
-								].map((t) => (
-									<span key={t} className="hero-proj-tag">
-										{t}
-									</span>
-								))}
-							</div>
+							<PHBadge
+								name="Flux"
+								postId="1227262"
+								url="https://www.producthunt.com/products/flux-modern-api-client?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-flux-modern-api-client-2"
+							/>
 						</div>
 					</div>
 
@@ -964,30 +785,25 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 							</div>
 							<div className="hero-proj-status">
 								<span className="hero-proj-status-dot building" />
-								Interpreter Phase
+								Public Beta · v0.4.0
 							</div>
 							<h3 className="hero-proj-name">Orion Language</h3>
-							<p className="hero-proj-role">
-								Language Designer & Core Developer
-							</p>
+							<p className="hero-proj-role">Language Designer & Core Developer</p>
 							<p className="hero-proj-desc">
-								Modern interpreted programming language with clean syntax,
-								built-in concurrency, powerful metaprogramming, and
-								Spanish-friendly keywords.
+								Backend and automation language written in Rust: a bytecode VM, a Cranelift JIT and AOT native binaries, 58 built-in modules, plus an LSP and debugger for VS Code.
 							</p>
 							<div className="hero-proj-tech">
-								{[
-									"Python",
-									"ANTLR4",
-									"Custom Parser",
-									"AST",
-									"Bytecode VM",
-								].map((t) => (
+								{["Rust","Cranelift","Bytecode VM","LSP","DAP"].map((t) => (
 									<span key={t} className="hero-proj-tag">
 										{t}
 									</span>
 								))}
 							</div>
+							<PHBadge
+								name="Orion Language"
+								postId="1210278"
+								url="https://www.producthunt.com/products/orion-language?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-orion-language"
+							/>
 						</div>
 					</div>
 				</div>
@@ -1004,53 +820,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ setCurrentSection }) => {
 							<span className="hero-code-filename">main.orx</span>
 						</div>
 						<pre className="hero-code-body">
-							<code>
-								<span className="code-keyword">use</span>{" "}
-								<span className="code-module">ai</span>
+								<code>
+								<span className="code-keyword">use</span> <span className="code-module">net</span>{"\n"}
+								<span className="code-keyword">use</span> <span className="code-module">json</span>{"\n"}
 								{"\n"}
-								<span className="code-keyword">use</span>{" "}
-								<span className="code-module">json</span>
+								<span className="code-var">PORT</span> <span className="code-op">=</span> <span className="code-bool">8080</span>{"\n"}
 								{"\n"}
+								<span className="code-comment">-- Router: handles every incoming request</span>{"\n"}
+								<span className="code-keyword">fn</span> <span className="code-func">router</span>(<span className="code-var">req</span>) {"{"}{"\n"}
+								{"    "}<span className="code-keyword">if</span> <span className="code-var">req</span>[<span className="code-string">"path"</span>] <span className="code-op">==</span> <span className="code-string">"/ping"</span> {"{"}{"\n"}
+								{"        "}<span className="code-keyword">return</span> {"{ "}<span className="code-string">"status"</span>: <span className="code-bool">200</span>, <span className="code-string">"body"</span>: <span className="code-string">"pong"</span>{" }"}{"\n"}
+								{"    }"}{"\n"}
+								{"    "}<span className="code-keyword">return</span> {"{ "}<span className="code-string">"status"</span>: <span className="code-bool">404</span>, <span className="code-string">"body"</span>: <span className="code-string">"Not found"</span>{" }"}{"\n"}
+								{"}"}{"\n"}
 								{"\n"}
-								<span className="code-comment">
-									-- Initialize Orion AI agent
-								</span>
-								{"\n"}
-								<span className="code-var">agent</span>{" "}
-								<span className="code-op">=</span>{" "}
-								<span className="code-module">ai</span>.
-								<span className="code-func">create</span>(
-								<span className="code-string">"orion-v1"</span>){"\n"}
-								<span className="code-var">agent</span>.
-								<span className="code-func">configure</span>
-								{"({"}
-								{"\n"}
-								{"  "}
-								<span className="code-prop">model</span>:{" "}
-								<span className="code-string">"gpt-4"</span>,{"\n"}
-								{"  "}
-								<span className="code-prop">memory</span>:{" "}
-								<span className="code-bool">true</span>,{"\n"}
-								{"  "}
-								<span className="code-prop">tools</span>: [
-								<span className="code-string">"search"</span>,{" "}
-								<span className="code-string">"code"</span>,{" "}
-								<span className="code-string">"analyze"</span>]{"\n"}
-								{"})"}
-								{"\n"}
-								{"\n"}
-								<span className="code-comment">-- Execute autonomous task</span>
-								{"\n"}
-								<span className="code-var">result</span>{" "}
-								<span className="code-op">=</span>{" "}
-								<span className="code-var">agent</span>.
-								<span className="code-func">run</span>(
-								<span className="code-string">"Build me a REST API"</span>)
-								{"\n"}
-								<span className="code-keyword">show</span>(
-								<span className="code-var">result</span>.
-								<span className="code-prop">output</span>)
-							</code>
+								<span className="code-keyword">show</span> <span className="code-string">"Listening on port "</span> <span className="code-op">+</span> <span className="code-func">str</span>(<span className="code-var">PORT</span>){"\n"}
+								<span className="code-keyword">serve</span> <span className="code-var">PORT</span> <span className="code-var">router</span>
+								</code>
 						</pre>
 					</div>
 				</div>

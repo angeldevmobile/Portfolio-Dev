@@ -260,7 +260,7 @@ const softSkills: SoftSkillItem[] = [
     name: "Leadership",
     icon: <FaRocket />,
     color: "#a855f7",
-    description: "Founder mindset — leading projects from 0 to 1 with vision and strategy",
+    description: "Founder mindset: leading projects from 0 to 1 with vision and strategy",
   },
   {
     name: "Teamwork",
@@ -278,7 +278,7 @@ const softSkills: SoftSkillItem[] = [
     name: "Communication",
     icon: <FaComments />,
     color: "#22c55e",
-    description: "Clear technical communication — bilingual (Spanish & English)",
+    description: "Clear technical communication, bilingual (Spanish & English)",
   },
   {
     name: "Fast Learner",
@@ -687,7 +687,7 @@ const Skills: React.FC = () => {
           Skills & <span className="skills-gradient-text">Technologies</span>
         </h2>
         <p className="skills-subtitle">
-          A comprehensive toolkit built through years of professional development —
+          A comprehensive toolkit built through years of professional development,
           from pixel-perfect frontends to intelligent AI systems and cloud infrastructure.
         </p>
       </div>
@@ -742,7 +742,7 @@ const Skills: React.FC = () => {
             Soft <span className="skills-gradient-text-pink">Skills</span>
           </h2>
           <p className="skills-subtitle">
-            Technical excellence is just the beginning — these are the human skills
+            Technical excellence is just the beginning. These are the human skills
             that make great software truly exceptional.
           </p>
         </div>

@@ -98,7 +98,7 @@ const App: React.FC = () => {
         </div>
       </CSSTransition>
       
-      <Footer />
+      <Footer setCurrentSection={setCurrentSection} />
     </div>
   );
 };

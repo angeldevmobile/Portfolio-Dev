@@ -1,687 +1,1260 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  animate,
+  motion,
+  useInView,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import type { IconType } from "react-icons";
+import {
+  FaArrowRight,
+  FaBook,
+  FaCheck,
+  FaChevronLeft,
+  FaChevronRight,
+  FaCopy,
+  FaDownload,
+  FaExternalLinkAlt,
+  FaGithub,
+  FaLock,
+  FaPlay,
+  FaTimes,
+} from "react-icons/fa";
+import {
+  SiAnthropic,
+  SiDart,
+  SiDocker,
+  SiExpo,
+  SiFlutter,
+  SiJavascript,
+  SiJest,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiNpm,
+  SiProducthunt,
+  SiPypi,
+  SiPython,
+  SiRadixui,
+  SiReact,
+  SiRender,
+  SiRust,
+  SiSpringboot,
+  SiSqlite,
+  SiSupabase,
+  SiTailwindcss,
+  SiTauri,
+  SiTurborepo,
+  SiTypescript,
+  SiVercel,
+  SiVite,
+  SiWebassembly,
+} from "react-icons/si";
+import { VscVscode } from "react-icons/vsc";
 import "./css/Projects.css";
-import Imagen1 from "../assets/ux_ui.png";
-import Imagen2 from "../assets/web.png";
-import Imagen3 from "../assets/asistente_ia.png";
-import imagen4 from "../assets/orion.png";
-import colaborator1 from "../assets/platform.png";
-import colaborator2 from "../assets/perfil-github.png";
-import { FaLinkedin, FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
-interface Projects {
-  title: string;
-  date: string;
-  description: string;
-  image: string;
-  collaborators: string[];
-  technologies?: string[];
-  icon?: React.ReactNode;
-  members?: {
-    name: string;
-    photo: string;
-    github?: string;
-    linkedin?: string;
-  }[];
-  codeUrl?: string;
-  liveUrl?: string;
-  status?: string;
-  statusColor?: string;
-  category?: string;
+import fluxApp from "../assets/projects/flux-app.png";
+import fluxApp2 from "../assets/projects/flux-app-2.png";
+import fluxApp3 from "../assets/projects/flux-app-3.png";
+import fluxSite from "../assets/projects/flux-site.png";
+import fluxLearning from "../assets/projects/flux-learning.png";
+import orionVscode from "../assets/projects/orion-vscode.jpeg";
+import orionTerminal from "../assets/projects/orion-terminal.jpeg";
+import orionExcel from "../assets/projects/orion-excel.jpeg";
+import orionDocs from "../assets/projects/orion-docs.png";
+import orionMarketplace from "../assets/projects/orion-marketplace.png";
+import orionCli from "../assets/projects/orion-cli.png";
+import orionPlayground from "../assets/projects/orion-playground.png";
+import smartFeature from "../assets/projects/smartremote-feature.png";
+import smartRemote from "../assets/projects/smartremote-remote.png";
+import smartVoice from "../assets/projects/smartremote-voice.png";
+import portfolioShot from "../assets/web.png";
+
+/* ═══════════════════════════════════════════
+   DATA
+   ═══════════════════════════════════════════ */
+
+type Filter = "All" | "Products" | "Orion Ecosystem" | "Open Source" | "Mobile" | "Web";
+type StatusTone = "live" | "beta" | "dev";
+type PreviewKind = "desktop" | "browser" | "phone" | "code";
+type LinkKind = "live" | "github" | "download" | "docs" | "play" | "marketplace" | "package";
+
+interface ProjectLink {
+  label: string;
+  url: string;
+  kind: LinkKind;
 }
 
-/* ── SVG 3D Icons ── */
-const MobileIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="mobileGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#6366f1" />
-        <stop offset="100%" stopColor="#a855f7" />
-      </linearGradient>
-      <filter id="mobile3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#6366f1" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    <rect x="20" y="8" width="40" height="64" rx="8" fill="url(#mobileGrad)" filter="url(#mobile3d)" />
-    <rect x="26" y="16" width="28" height="40" rx="3" fill="#1e1b4b" opacity="0.8" />
-    <circle cx="40" cy="64" r="3" fill="#c4b5fd" />
-    <circle cx="14" cy="20" r="2" fill="#818cf8" opacity="0.6">
-      <animate attributeName="cy" values="20;14;20" dur="3s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="66" cy="50" r="1.5" fill="#c084fc" opacity="0.5">
-      <animate attributeName="cy" values="50;44;50" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="12" cy="55" r="1" fill="#a78bfa" opacity="0.4">
-      <animate attributeName="cy" values="55;50;55" dur="2s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
+interface ProjectImage {
+  src: string;
+  alt: string;
+}
 
-const WebIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="webGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#06b6d4" />
-        <stop offset="100%" stopColor="#3b82f6" />
-      </linearGradient>
-      <filter id="web3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#3b82f6" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    <rect x="8" y="14" width="64" height="44" rx="6" fill="url(#webGrad)" filter="url(#web3d)" />
-    <rect x="14" y="20" width="52" height="30" rx="2" fill="#0c1445" opacity="0.8" />
-    <circle cx="18" cy="17" r="1.5" fill="#ef4444" />
-    <circle cx="24" cy="17" r="1.5" fill="#eab308" />
-    <circle cx="30" cy="17" r="1.5" fill="#22c55e" />
-    <rect x="20" y="26" width="20" height="2" rx="1" fill="#38bdf8" opacity="0.7" />
-    <rect x="20" y="32" width="30" height="2" rx="1" fill="#818cf8" opacity="0.5" />
-    <rect x="20" y="38" width="15" height="2" rx="1" fill="#34d399" opacity="0.6" />
-    <rect x="34" y="58" width="12" height="4" rx="1" fill="#64748b" />
-    <rect x="28" y="62" width="24" height="3" rx="1.5" fill="#475569" />
-    <circle cx="68" cy="12" r="2" fill="#38bdf8" opacity="0.5">
-      <animate attributeName="cy" values="12;6;12" dur="2.8s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="6" cy="40" r="1.5" fill="#818cf8" opacity="0.4">
-      <animate attributeName="cy" values="40;34;40" dur="3.2s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
+interface Project {
+  id: string;
+  title: string;
+  tagline: string;
+  kind: string;
+  period: string;
+  status: string;
+  tone: StatusTone;
+  accent: [string, string];
+  size: "md" | "lg" | "xl";
+  filters: Filter[];
+  summary: string;
+  highlights: string[];
+  metrics?: { value: string; label: string }[];
+  stack: string[];
+  preview: PreviewKind;
+  previewUrl?: string;
+  images: ProjectImage[];
+  links: ProjectLink[];
+  privateRepo?: boolean;
+  install?: { label: string; cmd: string }[];
+  productHunt?: { url: string; postId: string };
+}
 
-const AIIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#f43f5e" />
-        <stop offset="100%" stopColor="#f97316" />
-      </linearGradient>
-      <filter id="ai3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#f43f5e" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    <circle cx="40" cy="36" r="22" fill="url(#aiGrad)" filter="url(#ai3d)" />
-    <circle cx="40" cy="36" r="5" fill="#1e1b4b" opacity="0.8" />
-    <circle cx="30" cy="28" r="3" fill="#fbbf24" opacity="0.7" />
-    <circle cx="50" cy="28" r="3" fill="#fbbf24" opacity="0.7" />
-    <circle cx="34" cy="44" r="3" fill="#fbbf24" opacity="0.7" />
-    <circle cx="46" cy="44" r="3" fill="#fbbf24" opacity="0.7" />
-    <line x1="40" y1="36" x2="30" y2="28" stroke="#fde68a" strokeWidth="1" opacity="0.5" />
-    <line x1="40" y1="36" x2="50" y2="28" stroke="#fde68a" strokeWidth="1" opacity="0.5" />
-    <line x1="40" y1="36" x2="34" y2="44" stroke="#fde68a" strokeWidth="1" opacity="0.5" />
-    <line x1="40" y1="36" x2="46" y2="44" stroke="#fde68a" strokeWidth="1" opacity="0.5" />
-    <circle cx="40" cy="36" r="26" fill="none" stroke="#f43f5e" strokeWidth="1" opacity="0.3">
-      <animate attributeName="r" values="22;30;22" dur="2s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.3;0;0.3" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="40" cy="36" r="22" fill="none" stroke="#f97316" strokeWidth="0.5" opacity="0.2">
-      <animate attributeName="r" values="22;34;22" dur="3s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite" />
-    </circle>
-    <text x="40" y="68" textAnchor="middle" fill="#f9a8d4" fontSize="8" fontWeight="bold" fontFamily="monospace">AI</text>
-    <circle cx="10" cy="20" r="1.5" fill="#fb923c" opacity="0.5">
-      <animate attributeName="cy" values="20;14;20" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="70" cy="50" r="2" fill="#f472b6" opacity="0.4">
-      <animate attributeName="cy" values="50;44;50" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
+const FILTERS: Filter[] = ["All", "Products", "Orion Ecosystem", "Open Source", "Mobile", "Web"];
 
-const OrionPlatformIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="orionGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#8b5cf6" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-      <filter id="orion3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#8b5cf6" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    {/* Constellation / Star shape */}
-    <polygon points="40,6 46,28 68,28 50,40 56,62 40,48 24,62 30,40 12,28 34,28" fill="url(#orionGrad)" filter="url(#orion3d)" />
-    <circle cx="40" cy="34" r="6" fill="#0f172a" opacity="0.8" />
-    <circle cx="40" cy="34" r="3" fill="#c4b5fd" opacity="0.9">
-      <animate attributeName="r" values="3;4;3" dur="2s" repeatCount="indefinite" />
-    </circle>
-    {/* Orbiting dots */}
-    <circle cx="40" cy="14" r="2" fill="#22d3ee" opacity="0.7">
-      <animateTransform attributeName="transform" type="rotate" values="0 40 34;360 40 34" dur="6s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="58" cy="46" r="1.5" fill="#a78bfa" opacity="0.6">
-      <animateTransform attributeName="transform" type="rotate" values="120 40 34;480 40 34" dur="6s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="22" cy="46" r="1.5" fill="#67e8f9" opacity="0.5">
-      <animateTransform attributeName="transform" type="rotate" values="240 40 34;600 40 34" dur="6s" repeatCount="indefinite" />
-    </circle>
-    {/* Glow ring */}
-    <circle cx="40" cy="34" r="28" fill="none" stroke="#8b5cf6" strokeWidth="0.5" opacity="0.2">
-      <animate attributeName="r" values="28;34;28" dur="3s" repeatCount="indefinite" />
-      <animate attributeName="opacity" values="0.2;0;0.2" dur="3s" repeatCount="indefinite" />
-    </circle>
-    <text x="40" y="76" textAnchor="middle" fill="#a78bfa" fontSize="6" fontWeight="bold" fontFamily="monospace">ORION</text>
-  </svg>
-);
+const phBadgeSrc = (postId: string) =>
+  `https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=${postId}&theme=dark`;
 
-const LanguageIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="langGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#eab308" />
-        <stop offset="100%" stopColor="#f97316" />
-      </linearGradient>
-      <filter id="lang3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#eab308" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    {/* Terminal/Code block */}
-    <rect x="10" y="12" width="60" height="48" rx="8" fill="url(#langGrad)" filter="url(#lang3d)" />
-    <rect x="14" y="20" width="52" height="36" rx="4" fill="#1c1917" opacity="0.9" />
-    {/* Terminal dots */}
-    <circle cx="20" cy="16" r="1.5" fill="#ef4444" />
-    <circle cx="26" cy="16" r="1.5" fill="#eab308" />
-    <circle cx="32" cy="16" r="1.5" fill="#22c55e" />
-    {/* Code lines typing effect */}
-    <rect x="20" y="26" width="16" height="2" rx="1" fill="#fbbf24" opacity="0.8">
-      <animate attributeName="width" values="0;16;16" dur="2s" repeatCount="indefinite" />
-    </rect>
-    <rect x="38" y="26" width="12" height="2" rx="1" fill="#34d399" opacity="0.6">
-      <animate attributeName="width" values="0;12;12" dur="2s" begin="0.3s" repeatCount="indefinite" />
-    </rect>
-    <rect x="20" y="32" width="24" height="2" rx="1" fill="#818cf8" opacity="0.7">
-      <animate attributeName="width" values="0;24;24" dur="2s" begin="0.6s" repeatCount="indefinite" />
-    </rect>
-    <rect x="20" y="38" width="8" height="2" rx="1" fill="#fb923c" opacity="0.7">
-      <animate attributeName="width" values="0;8;8" dur="2s" begin="0.9s" repeatCount="indefinite" />
-    </rect>
-    <rect x="30" y="38" width="20" height="2" rx="1" fill="#f472b6" opacity="0.5">
-      <animate attributeName="width" values="0;20;20" dur="2s" begin="1.2s" repeatCount="indefinite" />
-    </rect>
-    {/* Cursor blink */}
-    <rect x="20" y="44" width="2" height="8" rx="1" fill="#fbbf24">
-      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite" />
-    </rect>
-    {/* Lightning bolt */}
-    <polygon points="62,4 56,18 64,18 54,34 60,22 52,22" fill="#fde68a" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;0.3;0.6" dur="1.5s" repeatCount="indefinite" />
-    </polygon>
-    <text x="40" y="72" textAnchor="middle" fill="#fbbf24" fontSize="7" fontWeight="bold" fontFamily="monospace">{"</>"}
-    </text>
-  </svg>
-);
-
-const MusicIcon = () => (
-  <svg className="project-svg-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="musicGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#10b981" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-      <filter id="music3d" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="3" dy="6" stdDeviation="4" floodColor="#10b981" floodOpacity="0.4" />
-      </filter>
-    </defs>
-    {/* Disc */}
-    <circle cx="40" cy="38" r="24" fill="url(#musicGrad)" filter="url(#music3d)" />
-    <circle cx="40" cy="38" r="16" fill="#0f172a" opacity="0.6" />
-    <circle cx="40" cy="38" r="8" fill="#1e293b" opacity="0.8" />
-    <circle cx="40" cy="38" r="3" fill="#34d399" opacity="0.9" />
-    {/* Spinning grooves */}
-    <circle cx="40" cy="38" r="20" fill="none" stroke="#34d399" strokeWidth="0.5" opacity="0.3">
-      <animateTransform attributeName="transform" type="rotate" values="0 40 38;360 40 38" dur="4s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="40" cy="38" r="12" fill="none" stroke="#5eead4" strokeWidth="0.5" opacity="0.2" strokeDasharray="3 3">
-      <animateTransform attributeName="transform" type="rotate" values="360 40 38;0 40 38" dur="3s" repeatCount="indefinite" />
-    </circle>
-    {/* Sound waves */}
-    <path d="M66 30 Q70 38 66 46" stroke="#22d3ee" strokeWidth="2" fill="none" opacity="0.5">
-      <animate attributeName="opacity" values="0.5;0.1;0.5" dur="1.5s" repeatCount="indefinite" />
-    </path>
-    <path d="M70 26 Q76 38 70 50" stroke="#22d3ee" strokeWidth="1.5" fill="none" opacity="0.3">
-      <animate attributeName="opacity" values="0.3;0.05;0.3" dur="1.5s" begin="0.3s" repeatCount="indefinite" />
-    </path>
-    {/* Music note */}
-    <path d="M16 18 L16 10 L24 8 L24 16" stroke="#a7f3d0" strokeWidth="2" fill="none" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
-    </path>
-    <circle cx="14" cy="18" r="3" fill="#a7f3d0" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <text x="40" y="72" textAnchor="middle" fill="#34d399" fontSize="7" fontWeight="bold" fontFamily="monospace">♪</text>
-  </svg>
-);
-
-const categories = ["All", "AI & ML", "Web", "Mobile", "Languages"];
-
-const projects: Projects[] = [
+const projects: Project[] = [
   {
-    title: "Orion AI Platform",
-    date: "2025 - Present",
-    description:
-      "AI-powered platform integrating multiple LLM models (OpenAI GPT, Anthropic Claude) with automation tools, intelligent workflows, and a modern React-based dashboard for enterprise productivity.",
-    image: colaborator1,
-    collaborators: [colaborator1],
-    technologies: ["React", "TypeScript", "Vite", "Node.js", "Express", "PostgreSQL", "Prisma", "OpenAI", "Claude"],
-    icon: undefined,
-    status: "In Development",
-    statusColor: "#eab308",
-    category: "AI & ML",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator1,
-        github: "https://github.com/angeldevmobile",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    id: "flux",
+    title: "Flux",
+    tagline: "Open-source desktop API client, a lightweight Postman alternative",
+    kind: "Desktop App",
+    period: "May 2026 – Present",
+    status: "Public Beta · v0.3.0",
+    tone: "beta",
+    accent: ["#8b5cf6", "#6366f1"],
+    size: "lg",
+    filters: ["Products", "Open Source"],
+    summary:
+      "Native API client built with Tauri and Rust. HTTP, WebSocket, SSE, gRPC and GraphQL in one app, with AI-generated tests, load testing and local mock servers, all in under 30 MB of RAM.",
+    highlights: [
+      "Test HTTP, WebSocket, Server-Sent Events, gRPC and GraphQL from a single workspace",
+      "AI test generation, error debugging and failing-test fixes powered by Claude",
+      "Built-in load testing with P95 / P99 latency reports",
+      "Zero-config local mock server with AI-generated response bodies",
+      "Collections, environments and optional Supabase cloud sync with row-level security",
+      "CLI runner for GitHub Actions and Jenkins pipelines",
     ],
-    codeUrl: "https://github.com/angeldevmobile",
+    metrics: [
+      { value: "<30 MB", label: "RAM usage" },
+      { value: "5", label: "protocols" },
+      { value: "3", label: "desktop OSes" },
+    ],
+    stack: [
+      "Rust",
+      "Tauri",
+      "React",
+      "TypeScript",
+      "Tokio",
+      "gRPC",
+      "Axum",
+      "SQLite",
+      "Supabase",
+      "Monaco Editor",
+      "Claude API",
+      "Zustand",
+      "Radix UI",
+      "Tailwind CSS",
+    ],
+    preview: "desktop",
+    previewUrl: "Flux",
+    images: [
+      { src: fluxApp, alt: "Flux request editor with collections and the AI test generator" },
+      { src: fluxApp2, alt: "Flux desktop app" },
+      { src: fluxApp3, alt: "Flux desktop app" },
+      { src: fluxSite, alt: "fluxapi.dev landing page" },
+    ],
+    productHunt: {
+      url: "https://www.producthunt.com/products/flux-modern-api-client?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-flux-modern-api-client-2",
+      postId: "1227262",
+    },
+    links: [
+      { label: "fluxapi.dev", url: "https://fluxapi.dev/", kind: "live" },
+      { label: "Download", url: "https://github.com/angeldevmobile/Flux-Post/releases/latest", kind: "download" },
+      { label: "Source", url: "https://github.com/angeldevmobile/Flux-Post", kind: "github" },
+    ],
   },
   {
+    id: "flux-learning",
+    title: "Flux Learning",
+    tagline: "AI flashcards with spaced repetition",
+    kind: "Web & Mobile",
+    period: "Apr 2026 – Present",
+    status: "In Production",
+    tone: "live",
+    accent: ["#a855f7", "#ec4899"],
+    size: "md",
+    filters: ["Products", "Web", "Mobile"],
+    summary:
+      "Upload a PDF, paste text or drop a YouTube link and the AI builds a deck in seconds. SM-2 spaced repetition, real-time duels, weekly leagues and a deck marketplace.",
+    highlights: [
+      "Deck generation from PDFs, YouTube transcripts, web pages and plain text",
+      "SM-2 spaced repetition with adaptive study sessions",
+      "AI explanations when you miss a card, plus contextual hints",
+      "Real-time 1v1 duels, XP levels, weekly leagues and global leaderboards",
+      "Deck marketplace and an institutional dashboard for groups",
+      "Free, Pro and Institutional plans",
+    ],
+    metrics: [
+      { value: "SM-2", label: "spaced repetition" },
+      { value: "Live", label: "on Vercel" },
+      { value: "2", label: "apps, one monorepo" },
+    ],
+    stack: [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Expo",
+      "React Native",
+      "Supabase",
+      "Claude API",
+      "Zustand",
+      "Tailwind CSS",
+      "Turborepo",
+      "Jest",
+      "Vercel",
+    ],
+    preview: "browser",
+    previewUrl: "flux-learning-7g6f.vercel.app",
+    images: [{ src: fluxLearning, alt: "Flux Learning landing page with the deck generator" }],
+    links: [{ label: "Open the app", url: "https://flux-learning-7g6f.vercel.app/", kind: "live" }],
+    privateRepo: true,
+  },
+  {
+    id: "orion",
     title: "Orion Language",
-    date: "2025 - Present",
-    description:
-      "A programming language for backend work and automation, written in Rust end to end. Compiles to bytecode with three execution backends sharing one frontend: a VM, a Cranelift JIT and AOT compilation to a native binary. Ships as a single executable with 58 standard library modules, a VS Code extension published on the Marketplace, and a browser playground that runs real code in a sandboxed container.",
-    image: imagen4,
-    collaborators: [colaborator2],
-    technologies: ["Rust", "Cranelift JIT", "Compiler Design", "Bytecode VM", "LSP", "DAP", "TypeScript"],
-    icon: undefined,
-    status: "Public Beta",
-    statusColor: "#22c55e",
-    category: "Languages",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator2,
-        github: "https://github.com/angeldevmobile",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    tagline: "A backend and automation language, written in Rust end to end",
+    kind: "Programming Language",
+    period: "2025 – Present",
+    status: "Public Beta · v0.4.0",
+    tone: "beta",
+    accent: ["#3b82f6", "#06b6d4"],
+    size: "xl",
+    filters: ["Orion Ecosystem", "Open Source"],
+    summary:
+      "Compiles to bytecode and runs on three backends that share one frontend: a bytecode VM, a Cranelift JIT and AOT native binaries. One executable, 58 built-in modules, no runtime to install.",
+    highlights: [
+      "Three execution backends: bytecode VM (no GIL), Cranelift JIT with VM fallback, and AOT to a native binary",
+      "58 standard library modules: HTTP server and client, WebSockets, CSV / Excel, data frames, crypto, S3, SSH, Docker, LLMs and embeddings",
+      "Optional typing, native OOP, async / await and structured error handling",
+      "Built-in tooling: REPL, watch mode, test runner, benchmarks and project scaffolding",
+      "Package manager backed by a GitHub-based registry (orion --add / --publish)",
+      "Language server and debugger (LSP + DAP) shipped through the VS Code extension",
     ],
-    codeUrl: "https://github.com/angeldevmobile/Orion",
-    liveUrl: "https://docs-orion.onrender.com",
+    metrics: [
+      { value: "3", label: "execution backends" },
+      { value: "58", label: "stdlib modules" },
+      { value: "1", label: "binary, no runtime" },
+    ],
+    stack: ["Rust", "Cranelift", "Bytecode VM", "AOT Compilation", "Compiler Design", "LSP", "DAP", "Tokio"],
+    preview: "desktop",
+    previewUrl: "ORION-LANGUAGE · VS Code",
+    images: [
+      { src: orionVscode, alt: "Orion code generating an Excel report, running in VS Code" },
+      { src: orionTerminal, alt: "Orion script output in the terminal" },
+      { src: orionExcel, alt: "Excel report produced by an Orion script" },
+      { src: orionDocs, alt: "Orion documentation site" },
+    ],
+    productHunt: {
+      url: "https://www.producthunt.com/products/orion-language?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-orion-language",
+      postId: "1210278",
+    },
+    links: [
+      { label: "Documentation", url: "https://docs-orion.onrender.com/", kind: "docs" },
+      { label: "Playground", url: "https://docs-orion.onrender.com/playground", kind: "play" },
+      { label: "Source", url: "https://github.com/angeldevmobile/Orion", kind: "github" },
+    ],
   },
   {
-    title: "Music Streaming App",
-    date: "2025 - Present",
-    description:
-      "Cross-platform music streaming application with real-time playback, social features, personalized recommendations, playlist management, and a beautiful responsive UI built with React Native.",
-    image: Imagen1,
-    collaborators: [colaborator2],
-    technologies: ["React Native", "TypeScript", "Firebase", "PostgreSQL", "Node.js"],
-    icon: undefined,
-    status: "60% Complete",
-    statusColor: "#06b6d4",
-    category: "Mobile",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator2,
-        github: "https://github.com/angeldevmobile",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    id: "seam",
+    title: "Seam",
+    tagline: "One schema. Every language. No drift.",
+    kind: "Open-source Library",
+    period: "Aug 2026 – Present",
+    status: "Published · v0.1.3",
+    tone: "live",
+    accent: ["#f97316", "#eab308"],
+    size: "md",
+    filters: ["Open Source"],
+    summary:
+      "A cross-language data contract with a Rust core. Write validation once in a .seam file, and Python, Node and the browser enforce identical rules, including dates, 64-bit integers and absent vs null.",
+    highlights: [
+      "Hand-written Rust core with zero dependencies; schemas are loaded and compiled at runtime",
+      "Bindings: PyO3 for Python, napi-rs for Node, wasm-bindgen for the browser (55 KiB brotli)",
+      "Custom JSON parser keeps 64-bit integers exact, surfaced as bigint in JavaScript",
+      "Tells absent apart from null in every language",
+      "Generates Python TypedDicts and TypeScript interfaces",
+      "95-case conformance suite that runs identically against every binding",
     ],
-    codeUrl: "https://github.com/angeldevmobile/app-music-mode",
+    metrics: [
+      { value: "3", label: "registries" },
+      { value: "95", label: "conformance tests" },
+      { value: "55 KiB", label: "WASM build" },
+    ],
+    stack: ["Rust", "PyO3", "napi-rs", "wasm-bindgen", "WebAssembly", "Python", "TypeScript", "Node.js"],
+    preview: "code",
+    images: [],
+    install: [
+      { label: "Rust", cmd: "cargo add seam-core" },
+      { label: "Python", cmd: "pip install seam-schema" },
+      { label: "Node", cmd: "npm install seam-schema" },
+      { label: "Browser", cmd: "npm install seam-schema-wasm" },
+    ],
+    productHunt: {
+      url: "https://www.producthunt.com/products/seam-4?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-seam-4",
+      postId: "1242240",
+    },
+    links: [
+      { label: "Source", url: "https://github.com/angeldevmobile/Seam", kind: "github" },
+      { label: "crates.io", url: "https://crates.io/crates/seam-core", kind: "package" },
+      { label: "PyPI", url: "https://pypi.org/project/seam-schema/", kind: "package" },
+      { label: "npm", url: "https://www.npmjs.com/package/seam-schema", kind: "package" },
+    ],
   },
   {
-    title: "Mobile Applications",
-    date: "January 2021 - Present",
-    description:
-      "Mobile applications built with Flutter & Dart, featuring pixel-perfect UI/UX design, smooth animations, and exceptional user experiences across Android and iOS platforms.",
-    image: Imagen1,
-    collaborators: [colaborator2],
-    technologies: ["Flutter", "Dart", "Android", "Firebase", "Figma", "Kotlin"],
-    icon: undefined,
-    status: "Active",
-    statusColor: "#22c55e",
-    category: "Mobile",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator2,
-        github: "https://github.com/angeldevmobile/shopping-econmerce-app",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    id: "orion-vscode",
+    title: "Orion for VS Code",
+    tagline: "The official Orion extension on the VS Code Marketplace",
+    kind: "Developer Tooling",
+    period: "Jul 2026 – Present",
+    status: "On Marketplace",
+    tone: "live",
+    accent: ["#0ea5e9", "#6366f1"],
+    size: "md",
+    filters: ["Orion Ecosystem", "Open Source"],
+    summary:
+      "Syntax highlighting, IntelliSense, real compiler diagnostics, a REPL, watch mode, a test explorer and an HTTP route explorer for Orion projects.",
+    highlights: [
+      "Token-level highlighting for every Orion construct, including string interpolation",
+      "IntelliSense with cross-file symbol resolution, hover docs and inlay type hints",
+      "Real compiler diagnostics in the Problems panel",
+      "Interactive REPL, watch mode and a test explorer that discovers test_*.orx files",
+      "Visual tools: UML shape diagrams, HTTP route explorer and import graphs",
+      "Documentation generator and a package manager UI",
     ],
-    codeUrl: "https://github.com/angeldevmobile/shopping-econmerce-app",
+    stack: ["JavaScript", "Node.js", "VS Code API", "LSP", "DAP"],
+    preview: "browser",
+    previewUrl: "marketplace.visualstudio.com",
+    images: [
+      { src: orionMarketplace, alt: "Orion Language listing on the VS Code Marketplace" },
+      { src: orionCli, alt: "Orion REPL launched from the terminal" },
+    ],
+    links: [
+      {
+        label: "Marketplace",
+        url: "https://marketplace.visualstudio.com/items?itemName=AngelZapata.oriondev",
+        kind: "marketplace",
+      },
+      { label: "Source", url: "https://github.com/angeldevmobile/Extension-lenguaje-orion", kind: "github" },
+    ],
   },
   {
+    id: "orion-playground",
+    title: "Orion Playground API",
+    tagline: "Sandboxed code execution behind the Orion web playground",
+    kind: "Backend Service",
+    period: "Jul 2026",
+    status: "Deployed",
+    tone: "live",
+    accent: ["#10b981", "#06b6d4"],
+    size: "md",
+    filters: ["Orion Ecosystem", "Open Source"],
+    summary:
+      "Receives Orion code over HTTP, runs it inside an isolated distroless container and returns the output as JSON. It powers the in-browser playground in the docs.",
+    highlights: [
+      "POST /run executes snippets and reports execution time",
+      "10-second timeout and 10 KB code limit per request",
+      "Sliding-window rate limit of 10 requests per minute per IP",
+      "Multi-stage Docker build on a distroless image to keep the attack surface small",
+      "Health and version endpoints for monitoring",
+    ],
+    stack: ["Rust", "Axum", "Tokio", "Docker", "Render"],
+    preview: "browser",
+    previewUrl: "docs-orion.onrender.com/playground",
+    images: [
+      { src: orionPlayground, alt: "Orion web playground editor" },
+      { src: orionDocs, alt: "Orion documentation site" },
+    ],
+    links: [
+      { label: "Try it", url: "https://docs-orion.onrender.com/playground", kind: "play" },
+      { label: "Source", url: "https://github.com/angeldevmobile/PlayGround---API", kind: "github" },
+    ],
+  },
+  {
+    id: "smartremote",
+    title: "SmartRemote",
+    tagline: "Your phone is your TV remote",
+    kind: "Mobile App",
+    period: "Jul 2026 – Present",
+    status: "Beta",
+    tone: "beta",
+    accent: ["#06b6d4", "#22d3ee"],
+    size: "lg",
+    filters: ["Mobile", "Open Source"],
+    summary:
+      "Flutter remote control for Smart TVs over local Wi-Fi. No ads, no accounts, no cloud: the phone talks directly to the TV.",
+    highlights: [
+      "LG webOS (WebSocket SSAP), Roku (ECP over HTTP) and Android / Google TV (Remote v2 over TLS + protobuf)",
+      "Automatic TV discovery with SSDP and mDNS, following the TV when its IP changes",
+      "One-time PIN pairing that is remembered across sessions",
+      "D-pad and touchpad modes, volume, channels, number pad and app shortcuts",
+      "Voice dictation to type on the TV",
+      "Wake-on-LAN power on for webOS TVs",
+    ],
+    metrics: [
+      { value: "3", label: "TV platforms" },
+      { value: "0", label: "servers or accounts" },
+      { value: "2", label: "targets: Android, iOS" },
+    ],
+    stack: ["Flutter", "Dart", "Riverpod", "WebSocket", "Protobuf", "TLS", "mDNS / SSDP", "Speech-to-Text"],
+    preview: "phone",
+    images: [
+      { src: smartRemote, alt: "SmartRemote remote screen with D-pad, volume and channel controls" },
+      { src: smartVoice, alt: "SmartRemote voice dictation screen" },
+      { src: smartFeature, alt: "SmartRemote feature graphic: LG webOS, Android TV and Roku" },
+    ],
+    links: [{ label: "Source", url: "https://github.com/angeldevmobile/SmartController", kind: "github" }],
+  },
+  {
+    id: "portfolio",
     title: "Portfolio & E-commerce",
-    date: "Apr 2021 - Present",
-    description:
-      "Full-stack eCommerce platform with admin & user portals, secure payment processing, product management, and a stunning developer portfolio showcasing professional work and projects.",
-    image: Imagen2,
-    collaborators: [colaborator2],
-    technologies: ["React", "TypeScript", "Spring Boot", "Node.js", "Tailwind", "Bootstrap", "Vite"],
-    icon: undefined,
+    tagline: "This site, plus a full-stack store",
+    kind: "Web",
+    period: "2025 – Present",
     status: "Active",
-    statusColor: "#22c55e",
-    category: "Web",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator2,
-        github: "https://github.com/angeldevmobile/my-portfolio-dev",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    tone: "live",
+    accent: ["#6366f1", "#a855f7"],
+    size: "md",
+    filters: ["Web", "Open Source"],
+    summary:
+      "Full-stack eCommerce platform with admin & user portals, secure payment processing and product management, alongside the developer portfolio you are looking at.",
+    highlights: [
+      "Admin and customer portals",
+      "Secure payment processing and product management",
+      "Animated, responsive developer portfolio",
     ],
-    codeUrl: "https://github.com/angeldevmobile/Portfolio-Dev",
-    liveUrl: "https://portfolio-angel-dev.onrender.com/",
-  },
-  {
-    title: "AI Virtual Assistant",
-    date: "January 2024 - July 2025",
-    description:
-      "Intelligent document processing platform powered by AI, featuring document validation, natural language interaction, and trained on custom data pipelines for enterprise use with Google's AI tools.",
-    image: Imagen3,
-    collaborators: [colaborator2],
-    technologies: ["Python", "Flask", "Gemini", "DocumentAI", "Cloud Storage", "LangChain", "LLMs"],
-    icon: undefined,
-    status: "Completed",
-    statusColor: "#3b82f6",
-    category: "AI & ML",
-    members: [
-      {
-        name: "Angel Zapata",
-        photo: colaborator2,
-        github: "https://github.com/angeldevmobile",
-        linkedin: "https://www.linkedin.com/in/gabriel-zapata-239501287/",
-      },
+    stack: ["React", "TypeScript", "Spring Boot", "Node.js", "Tailwind CSS", "Vite"],
+    preview: "browser",
+    previewUrl: "portfolio-angel-dev.onrender.com",
+    images: [{ src: portfolioShot, alt: "Developer portfolio home page" }],
+    links: [
+      { label: "Live site", url: "https://portfolio-angel-dev.onrender.com/", kind: "live" },
+      { label: "Source", url: "https://github.com/angeldevmobile/Portfolio-Dev", kind: "github" },
     ],
-    codeUrl: "https://github.com/angeldevmobile/assistant-virtual-prod",
   },
 ];
 
-const svgIcons = [
-  <OrionPlatformIcon />,
-  <LanguageIcon />,
-  <MusicIcon />,
-  <MobileIcon />,
-  <WebIcon />,
-  <AIIcon />,
+const TECH: Record<string, { icon: IconType; color: string }> = {
+  Rust: { icon: SiRust, color: "#f46623" },
+  Tauri: { icon: SiTauri, color: "#ffc131" },
+  React: { icon: SiReact, color: "#61dafb" },
+  "React Native": { icon: SiReact, color: "#61dafb" },
+  TypeScript: { icon: SiTypescript, color: "#3178c6" },
+  JavaScript: { icon: SiJavascript, color: "#f7df1e" },
+  "Next.js": { icon: SiNextdotjs, color: "#ffffff" },
+  Supabase: { icon: SiSupabase, color: "#3fcf8e" },
+  Expo: { icon: SiExpo, color: "#ffffff" },
+  Flutter: { icon: SiFlutter, color: "#54c5f8" },
+  Dart: { icon: SiDart, color: "#29b6f6" },
+  Docker: { icon: SiDocker, color: "#2496ed" },
+  Python: { icon: SiPython, color: "#ffd43b" },
+  PyO3: { icon: SiPython, color: "#ffd43b" },
+  WebAssembly: { icon: SiWebassembly, color: "#8b7cf6" },
+  "wasm-bindgen": { icon: SiWebassembly, color: "#8b7cf6" },
+  "Node.js": { icon: SiNodedotjs, color: "#5fa04e" },
+  "napi-rs": { icon: SiNodedotjs, color: "#5fa04e" },
+  "Spring Boot": { icon: SiSpringboot, color: "#6db33f" },
+  Render: { icon: SiRender, color: "#46e3b7" },
+  Turborepo: { icon: SiTurborepo, color: "#ef4444" },
+  SQLite: { icon: SiSqlite, color: "#74c3f0" },
+  "Radix UI": { icon: SiRadixui, color: "#ffffff" },
+  Jest: { icon: SiJest, color: "#c21325" },
+  Vite: { icon: SiVite, color: "#8a8fff" },
+  "Tailwind CSS": { icon: SiTailwindcss, color: "#38bdf8" },
+  "Claude API": { icon: SiAnthropic, color: "#d97757" },
+  Vercel: { icon: SiVercel, color: "#ffffff" },
+  "VS Code API": { icon: VscVscode, color: "#3ea6f0" },
+  "Monaco Editor": { icon: VscVscode, color: "#3ea6f0" },
+};
+
+const SHIPPED_ON: { label: string; icon: IconType; color: string }[] = [
+  { label: "GitHub Releases", icon: FaGithub, color: "#ffffff" },
+  { label: "Vercel", icon: SiVercel, color: "#ffffff" },
+  { label: "VS Code Marketplace", icon: VscVscode, color: "#3ea6f0" },
+  { label: "crates.io", icon: SiRust, color: "#f46623" },
+  { label: "PyPI", icon: SiPypi, color: "#6aa5e8" },
+  { label: "npm", icon: SiNpm, color: "#cb3837" },
 ];
 
-const Project = () => {
-  const [selectedProject, setSelectedProject] = useState<Projects | null>(null);
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(projects.length).fill(false));
-  const [headerVisible, setHeaderVisible] = useState(false);
-  const [activeCategory, setActiveCategory] = useState("All");
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const headerRef = useRef<HTMLDivElement>(null);
+const LINK_ICON: Record<LinkKind, IconType> = {
+  live: FaExternalLinkAlt,
+  github: FaGithub,
+  download: FaDownload,
+  docs: FaBook,
+  play: FaPlay,
+  marketplace: VscVscode,
+  package: FaExternalLinkAlt,
+};
 
-  const filteredProjects = activeCategory === "All"
-    ? projects
-    : projects.filter((p) => p.category === activeCategory);
+const EASE = [0.16, 1, 0.3, 1] as const;
 
-  useEffect(() => {
-    setVisibleCards(new Array(filteredProjects.length).fill(false));
+/* ═══════════════════════════════════════════
+   SMALL PIECES
+   ═══════════════════════════════════════════ */
 
-    const observerOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
+const StatusBadge: React.FC<{ status: string; tone: StatusTone }> = ({ status, tone }) => (
+  <span className={`pj-status pj-status--${tone}`}>
+    <span className="pj-status-dot" />
+    {status}
+  </span>
+);
 
-    const headerObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) setHeaderVisible(true);
-      });
-    }, observerOptions);
+const TechChip: React.FC<{ name: string; large?: boolean }> = ({ name, large }) => {
+  const tech = TECH[name];
+  const Icon = tech?.icon;
+  return (
+    <span className={`pj-chip ${large ? "pj-chip--lg" : ""}`}>
+      {Icon ? <Icon style={{ color: tech.color }} aria-hidden /> : <span className="pj-chip-dot" aria-hidden />}
+      {name}
+    </span>
+  );
+};
 
-    if (headerRef.current) headerObserver.observe(headerRef.current);
-
-    const timeout = setTimeout(() => {
-      const cardObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const index = cardsRef.current.indexOf(entry.target as HTMLDivElement);
-            if (index !== -1) {
-              setTimeout(() => {
-                setVisibleCards((prev) => {
-                  const next = [...prev];
-                  next[index] = true;
-                  return next;
-                });
-              }, index * 150);
-            }
-          }
-        });
-      }, observerOptions);
-
-      cardsRef.current.forEach((card) => {
-        if (card) cardObserver.observe(card);
-      });
-
-      return () => cardObserver.disconnect();
-    }, 100);
-
-    return () => {
-      headerObserver.disconnect();
-      clearTimeout(timeout);
-    };
-  }, [activeCategory, filteredProjects.length]);
+const CountUp: React.FC<{ to: number; suffix?: string }> = ({ to, suffix = "" }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true });
+  const [value, setValue] = useState(0);
 
   useEffect(() => {
-    document.body.style.overflow = selectedProject ? "hidden" : "auto";
-    return () => { document.body.style.overflow = "auto"; };
-  }, [selectedProject]);
-
-  const openModal = (project: Projects) => setSelectedProject(project);
-  const closeModal = () => setSelectedProject(null);
+    if (!inView) return;
+    const controls = animate(0, to, {
+      duration: 1.4,
+      ease: EASE,
+      onUpdate: (v) => setValue(Math.round(v)),
+    });
+    return () => controls.stop();
+  }, [inView, to]);
 
   return (
-    <section className="projects-section" id="projects">
-      {/* Animated background grid */}
-      <div className="projects-bg-grid" />
+    <span ref={ref}>
+      {value}
+      {suffix}
+    </span>
+  );
+};
 
-      {/* Floating orbs */}
-      <div className="projects-orb projects-orb-1" />
-      <div className="projects-orb projects-orb-2" />
-      <div className="projects-orb projects-orb-3" />
+/* Seam no tiene capturas: se muestra un schema .seam real del README */
+const SEAM_FIELDS: { name: string; type: string; note?: string; comment?: boolean }[] = [
+  { name: "id", type: "u64" },
+  { name: "name", type: "String", note: "@min_len(3)" },
+  { name: "contact", type: "String", note: "@format(email)" },
+  { name: "plan", type: "enum { free, pro }" },
+  { name: "nickname", type: "String?", note: "// may be null", comment: true },
+  { name: "bio", type: "optional String", note: "// may be absent", comment: true },
+];
 
-      <div ref={headerRef} className={`projects-header ${headerVisible ? "visible" : ""}`}>
-        <div className="projects-header-badge">
-          <span className="badge-dot" />
-          Featured Work
-        </div>
-        <h2 className="projects-title">
-          Projects I've <span className="gradient-text">Built</span>
-        </h2>
-        <p className="projects-subtitle">
-          From AI platforms to custom programming languages — here's a selection of work that defines my journey as a developer and founder.
-        </p>
+const CodePreview: React.FC<{ large?: boolean }> = ({ large }) => (
+  <div className={`pj-code ${large ? "pj-code--lg" : ""}`}>
+    <div className="pj-window-bar">
+      <span className="pj-dots">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span className="pj-window-title">user.seam</span>
+    </div>
+    <pre className="pj-code-body">
+      <motion.span
+        className="pj-code-line"
+        initial={{ opacity: 0, x: -8 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, ease: EASE }}
+      >
+        <span className="tk-kw">schema</span> <span className="tk-ty">User</span> {"{"}
+      </motion.span>
+      {SEAM_FIELDS.map((f, i) => (
+        <motion.span
+          key={f.name}
+          className="pj-code-line"
+          initial={{ opacity: 0, x: -8 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.08 * (i + 1), ease: EASE }}
+        >
+          {"  "}
+          <span className="tk-id">{`${f.name}:`.padEnd(10)}</span>
+          <span className="tk-ty">{f.type.padEnd(16)}</span>
+          {f.note && <span className={f.comment ? "tk-cm" : "tk-at"}>{f.note}</span>}
+        </motion.span>
+      ))}
+      <motion.span
+        className="pj-code-line"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay: 0.08 * (SEAM_FIELDS.length + 1) }}
+      >
+        {"}"}
+        <span className="pj-code-caret" />
+      </motion.span>
+    </pre>
+    <div className="pj-code-registries">
+      <span>
+        <SiRust style={{ color: "#f46623" }} /> crates.io
+      </span>
+      <span>
+        <SiPypi style={{ color: "#6aa5e8" }} /> PyPI
+      </span>
+      <span>
+        <SiNpm style={{ color: "#cb3837" }} /> npm
+      </span>
+    </div>
+  </div>
+);
 
-        {/* Category filter */}
-        <div className="projects-filter">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              className={`filter-btn ${activeCategory === cat ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+const Crossfade: React.FC<{ images: ProjectImage[]; index: number; className?: string }> = ({
+  images,
+  index,
+  className = "",
+}) => {
+  const img = images[index % images.length];
+  return (
+    <AnimatePresence initial={false}>
+      <motion.img
+        key={img.src}
+        src={img.src}
+        alt={img.alt}
+        className={`pj-shot ${className}`}
+        loading="lazy"
+        draggable={false}
+        initial={{ opacity: 0, scale: 1.04 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.7, ease: EASE }}
+      />
+    </AnimatePresence>
+  );
+};
+
+const Preview: React.FC<{ project: Project; frame: number }> = ({ project, frame }) => {
+  if (project.preview === "code") {
+    return (
+      <div className="pj-preview pj-preview--code">
+        <CodePreview />
       </div>
+    );
+  }
 
-      {/* Project count */}
-      <div className="projects-count">
-        <span className="count-number">{filteredProjects.length}</span>
-        <span className="count-label">
-          {activeCategory === "All" ? "Total Projects" : `${activeCategory} Projects`}
-        </span>
-      </div>
-
-      <div className="projects-grid">
-        {filteredProjects.map((project, index) => {
-          const globalIndex = projects.indexOf(project);
-          return (
-            <div
-              ref={(el) => {
-                cardsRef.current[index] = el;
-              }}
-              className={`project-card-3d ${visibleCards[index] ? "visible" : ""}`}
-              key={`${project.title}-${index}`}
-              style={{ "--card-index": index } as React.CSSProperties}
-              onClick={() => openModal(project)}
-            >
-              <div className="card-glow" />
-              <div className="card-inner">
-                {/* SVG Icon floating */}
-                <div className="card-svg-icon">{svgIcons[globalIndex]}</div>
-
-                {/* Status badge */}
-                <div className="card-status" style={{ "--status-color": project.statusColor } as React.CSSProperties}>
-                  <span className="status-dot" style={{ background: project.statusColor }} />
-                  {project.status}
-                </div>
-
-                {/* Category tag */}
-                <div className="card-category">{project.category}</div>
-
-                {/* Image */}
-                <div className="card-image-wrapper">
-                  <img src={project.image} alt={project.title} className="card-image" />
-                  <div className="card-image-overlay" />
-                </div>
-
-                {/* Content */}
-                <div className="card-content">
-                  <h3 className="card-title">{project.title}</h3>
-                  <p className="card-date">{project.date}</p>
-                  <p className="card-description">{project.description}</p>
-
-                  {/* Tech tags */}
-                  <div className="card-tech-row">
-                    {project.technologies?.slice(0, 4).map((tech) => (
-                      <span key={tech} className="card-tech-tag">
-                        {tech}
-                      </span>
-                    ))}
-                    {(project.technologies?.length || 0) > 4 && (
-                      <span className="card-tech-tag card-tech-more">
-                        +{(project.technologies?.length || 0) - 4}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="card-footer">
-                    <div className="card-collaborators">
-                      {project.collaborators.map((c, idx) => (
-                        <img src={c} alt={`Collaborator ${idx + 1}`} key={idx} className="card-avatar" />
-                      ))}
-                    </div>
-                    <span className="card-view-btn">
-                      View Details <FaExternalLinkAlt size={10} />
-                    </span>
-                  </div>
-                </div>
-              </div>
+  if (project.preview === "phone") {
+    const [main, second, feature] = project.images;
+    return (
+      <div className="pj-preview pj-preview--phone">
+        {feature && <img src={feature.src} alt="" className="pj-phone-feature" aria-hidden draggable={false} />}
+        <div className="pj-phones">
+          {second && (
+            <div className="pj-phone pj-phone--back">
+              <img src={second.src} alt={second.alt} loading="lazy" draggable={false} />
             </div>
-          );
-        })}
+          )}
+          <div className="pj-phone pj-phone--front">
+            <img src={main.src} alt={main.alt} loading="lazy" draggable={false} />
+          </div>
+        </div>
       </div>
+    );
+  }
 
-      {/* ── Modal ── */}
-      {selectedProject && (
-        <>
-          <div className="modal-overlay" onClick={closeModal} />
-          <div className="modal-3d">
-            <div className="modal-inner">
-              <button className="modal-close" onClick={closeModal}>
-                ✕
-              </button>
+  return (
+    <div className={`pj-preview pj-preview--${project.preview}`}>
+      <div className="pj-window">
+        <div className="pj-window-bar">
+          <span className="pj-dots">
+            <i />
+            <i />
+            <i />
+          </span>
+          {project.preview === "browser" ? (
+            <span className="pj-url">
+              <FaLock aria-hidden /> {project.previewUrl}
+            </span>
+          ) : (
+            <span className="pj-window-title">{project.previewUrl}</span>
+          )}
+        </div>
+        <div className="pj-window-screen">
+          <Crossfade images={project.images} index={frame} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-              <div className="modal-hero">
-                <img src={selectedProject.image} alt={selectedProject.title} className="modal-hero-image" />
-                <div className="modal-hero-overlay" />
-                <div className="modal-hero-content">
-                  <div className="modal-badges-row">
-                    <div
-                      className="modal-status-badge"
-                      style={{ "--status-color": selectedProject.statusColor } as React.CSSProperties}
-                    >
-                      <span className="status-dot" style={{ background: selectedProject.statusColor }} />
-                      {selectedProject.status}
-                    </div>
-                    {selectedProject.category && (
-                      <div className="modal-category-badge">{selectedProject.category}</div>
-                    )}
-                  </div>
-                  <h2 className="modal-title">{selectedProject.title}</h2>
-                  <p className="modal-date">{selectedProject.date}</p>
+/* ═══════════════════════════════════════════
+   CARD
+   ═══════════════════════════════════════════ */
+
+interface CardProps {
+  project: Project;
+  size: Project["size"];
+  order: number;
+  onOpen: (p: Project) => void;
+}
+
+const ProjectCard = React.forwardRef<HTMLElement, CardProps>(({ project, size, order, onOpen }, ref) => {
+  const reduceMotion = useReducedMotion();
+  const [hovered, setHovered] = useState(false);
+  const [frame, setFrame] = useState(0);
+
+  const px = useMotionValue(-600);
+  const py = useMotionValue(-600);
+  const nx = useMotionValue(0.5);
+  const ny = useMotionValue(0.5);
+  const rotateX = useSpring(useTransform(ny, [0, 1], [5, -5]), { stiffness: 180, damping: 18 });
+  const rotateY = useSpring(useTransform(nx, [0, 1], [-5, 5]), { stiffness: 180, damping: 18 });
+  const spotlight = useMotionTemplate`radial-gradient(520px circle at ${px}px ${py}px, var(--pj-spot), transparent 65%)`;
+
+  // En hover, las capturas rotan solas
+  useEffect(() => {
+    if (!hovered || project.images.length < 2 || reduceMotion) return;
+    const id = window.setInterval(() => setFrame((f) => f + 1), 1900);
+    return () => window.clearInterval(id);
+  }, [hovered, project.images.length, reduceMotion]);
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    px.set(e.clientX - rect.left);
+    py.set(e.clientY - rect.top);
+    if (!reduceMotion) {
+      nx.set((e.clientX - rect.left) / rect.width);
+      ny.set((e.clientY - rect.top) / rect.height);
+    }
+  };
+
+  const handleLeave = () => {
+    setHovered(false);
+    nx.set(0.5);
+    ny.set(0.5);
+    px.set(-600);
+    py.set(-600);
+  };
+
+  const quickLinks = project.links.filter((l) => l.kind === "github" || l.kind === "live" || l.kind === "play" || l.kind === "marketplace").slice(0, 2);
+
+  return (
+    <motion.article
+      ref={ref}
+      layout
+      className={`pj-card pj-card--${size}`}
+      style={
+        {
+          "--pj-a1": project.accent[0],
+          "--pj-a2": project.accent[1],
+          "--pj-spot": `${project.accent[0]}24`,
+        } as React.CSSProperties
+      }
+      initial={{ opacity: 0, y: 48 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      exit={{ opacity: 0, scale: 0.94, transition: { duration: 0.25 } }}
+      transition={{ duration: 0.8, delay: (order % 3) * 0.1, ease: EASE, layout: { duration: 0.5, ease: EASE } }}
+    >
+      <motion.div
+        className="pj-card-tilt"
+        style={{ rotateX, rotateY, transformPerspective: 1400 }}
+        onMouseEnter={() => setHovered(true)}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        onClick={() => onOpen(project)}
+      >
+        <span className="pj-card-border" aria-hidden />
+        <motion.span className="pj-card-spot" style={{ background: spotlight }} aria-hidden />
+
+        <Preview project={project} frame={frame} />
+
+        <div className="pj-card-body">
+          <div className="pj-card-meta">
+            <StatusBadge status={project.status} tone={project.tone} />
+            <span className="pj-kind">{project.kind}</span>
+          </div>
+
+          <h3 className="pj-card-title">{project.title}</h3>
+          <p className="pj-card-tagline">{project.tagline}</p>
+          <p className="pj-card-summary">{project.summary}</p>
+
+          {project.metrics && size !== "md" && (
+            <div className="pj-metrics">
+              {project.metrics.map((m) => (
+                <div key={m.label} className="pj-metric">
+                  <span className="pj-metric-value">{m.value}</span>
+                  <span className="pj-metric-label">{m.label}</span>
                 </div>
-              </div>
+              ))}
+            </div>
+          )}
 
-              <div className="modal-body">
-                <p className="modal-description">{selectedProject.description}</p>
+          <div className="pj-chip-row">
+            {project.stack.slice(0, size === "md" ? 4 : 6).map((t) => (
+              <TechChip key={t} name={t} />
+            ))}
+            {project.stack.length > (size === "md" ? 4 : 6) && (
+              <span className="pj-chip pj-chip--more">+{project.stack.length - (size === "md" ? 4 : 6)}</span>
+            )}
+          </div>
 
-                <div className="modal-section">
-                  <h4 className="modal-section-title">Technologies</h4>
-                  <div className="modal-tech-grid">
-                    {selectedProject.technologies?.map((tech) => (
-                      <span key={tech} className="modal-tech-badge">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="modal-section">
-                  <h4 className="modal-section-title">Team</h4>
-                  <div className="modal-members">
-                    {selectedProject.members?.map((member) => (
-                      <div key={member.name} className="modal-member">
-                        <img src={member.photo} alt={member.name} className="modal-member-photo" />
-                        <div className="modal-member-info">
-                          <span className="modal-member-name">{member.name}</span>
-                          <div className="modal-member-links">
-                            {member.github && (
-                              <a href={member.github} target="_blank" rel="noopener noreferrer" className="member-link">
-                                <FaGithub /> GitHub
-                              </a>
-                            )}
-                            {member.linkedin && (
-                              <a
-                                href={member.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="member-link linkedin"
-                              >
-                                <FaLinkedin /> LinkedIn
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="modal-actions">
-                  <a
-                    href={selectedProject.codeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="modal-btn primary"
-                  >
-                    <FaGithub /> View Source Code
-                  </a>
-                  {selectedProject.liveUrl && (
+          <div className="pj-card-foot">
+            <div className="pj-card-foot-left">
+              <span className="pj-period">{project.period}</span>
+              <div className="pj-quick-links">
+                {quickLinks.map((l) => {
+                  const Icon = LINK_ICON[l.kind];
+                  return (
                     <a
-                      href={selectedProject.liveUrl}
+                      key={l.url}
+                      href={l.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="modal-btn live"
+                      className="pj-quick-link"
+                      aria-label={`${project.title}: ${l.label}`}
+                      title={l.label}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      <FaExternalLinkAlt /> Live Demo
+                      <Icon />
                     </a>
-                  )}
-                  <button className="modal-btn secondary" onClick={closeModal}>
-                    Close
-                  </button>
-                </div>
+                  );
+                })}
+                {project.privateRepo && (
+                  <span className="pj-quick-link pj-quick-link--muted" title="Private repository">
+                    <FaLock />
+                  </span>
+                )}
+                {project.productHunt && (
+                  <a
+                    href={project.productHunt.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pj-quick-link pj-quick-link--ph"
+                    aria-label={`${project.title} on Product Hunt`}
+                    title="Featured on Product Hunt"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <SiProducthunt />
+                  </a>
+                )}
               </div>
             </div>
+            <button
+              type="button"
+              className="pj-open-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpen(project);
+              }}
+            >
+              Details <FaArrowRight aria-hidden />
+            </button>
           </div>
-        </>
-      )}
+        </div>
+      </motion.div>
+    </motion.article>
+  );
+});
+
+ProjectCard.displayName = "ProjectCard";
+
+/* ═══════════════════════════════════════════
+   MODAL
+   ═══════════════════════════════════════════ */
+
+const InstallBlock: React.FC<{ items: { label: string; cmd: string }[] }> = ({ items }) => {
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const copy = async (cmd: string) => {
+    try {
+      await navigator.clipboard.writeText(cmd);
+      setCopied(cmd);
+      window.setTimeout(() => setCopied(null), 1500);
+    } catch {
+      /* el portapapeles puede no estar disponible */
+    }
+  };
+
+  return (
+    <div className="pj-install">
+      {items.map((it) => (
+        <div key={it.cmd} className="pj-install-row">
+          <span className="pj-install-label">{it.label}</span>
+          <code>{it.cmd}</code>
+          <button type="button" onClick={() => copy(it.cmd)} aria-label={`Copy ${it.cmd}`}>
+            {copied === it.cmd ? <FaCheck /> : <FaCopy />}
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ project, onClose }) => {
+  const [index, setIndex] = useState(0);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const count = project.images.length;
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (count > 1 && e.key === "ArrowRight") setIndex((i) => (i + 1) % count);
+      if (count > 1 && e.key === "ArrowLeft") setIndex((i) => (i - 1 + count) % count);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [count, onClose]);
+
+  const current = project.images[index];
+
+  return (
+    <motion.div
+      className="pj-modal-root"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+    >
+      <div className="pj-modal-overlay" onClick={onClose} />
+      <motion.div
+        className="pj-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pj-modal-title"
+        style={{ "--pj-a1": project.accent[0], "--pj-a2": project.accent[1] } as React.CSSProperties}
+        initial={{ opacity: 0, y: 60, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 40, scale: 0.97 }}
+        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+      >
+        <button ref={closeRef} type="button" className="pj-modal-close" onClick={onClose} aria-label="Close">
+          <FaTimes />
+        </button>
+
+        {/* Galería */}
+        <div className={`pj-gallery ${project.preview === "phone" ? "pj-gallery--phone" : ""}`}>
+          {count > 0 ? (
+            <>
+              <div className="pj-gallery-stage">
+                <AnimatePresence initial={false} mode="wait">
+                  <motion.img
+                    key={current.src}
+                    src={current.src}
+                    alt={current.alt}
+                    className="pj-gallery-img"
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -24 }}
+                    transition={{ duration: 0.35, ease: EASE }}
+                  />
+                </AnimatePresence>
+                {count > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      className="pj-gallery-nav pj-gallery-nav--prev"
+                      onClick={() => setIndex((i) => (i - 1 + count) % count)}
+                      aria-label="Previous image"
+                    >
+                      <FaChevronLeft />
+                    </button>
+                    <button
+                      type="button"
+                      className="pj-gallery-nav pj-gallery-nav--next"
+                      onClick={() => setIndex((i) => (i + 1) % count)}
+                      aria-label="Next image"
+                    >
+                      <FaChevronRight />
+                    </button>
+                  </>
+                )}
+              </div>
+              {count > 1 && (
+                <div className="pj-thumbs">
+                  {project.images.map((img, i) => (
+                    <button
+                      type="button"
+                      key={img.src}
+                      className={`pj-thumb ${i === index ? "active" : ""}`}
+                      onClick={() => setIndex(i)}
+                      aria-label={`Show image ${i + 1}`}
+                    >
+                      <img src={img.src} alt="" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="pj-gallery-code">
+              <CodePreview large />
+            </div>
+          )}
+        </div>
+
+        <div className="pj-modal-body">
+          <div className="pj-modal-head">
+            <div className="pj-card-meta">
+              <StatusBadge status={project.status} tone={project.tone} />
+              <span className="pj-kind">{project.kind}</span>
+              <span className="pj-kind">{project.period}</span>
+            </div>
+            <h2 id="pj-modal-title" className="pj-modal-title">
+              {project.title}
+            </h2>
+            <p className="pj-modal-tagline">{project.tagline}</p>
+          </div>
+
+          <div className="pj-modal-links">
+            {project.links.map((l, i) => {
+              const Icon = LINK_ICON[l.kind];
+              return (
+                <a
+                  key={l.url}
+                  href={l.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`pj-btn ${i === 0 ? "pj-btn--primary" : ""}`}
+                >
+                  <Icon aria-hidden /> {l.label}
+                </a>
+              );
+            })}
+            {project.privateRepo && (
+              <span className="pj-btn pj-btn--ghost" title="The source code is in a private repository">
+                <FaLock aria-hidden /> Private repository
+              </span>
+            )}
+            {project.productHunt && (
+              <a
+                href={project.productHunt.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pj-ph-badge"
+              >
+                <img
+                  src={phBadgeSrc(project.productHunt.postId)}
+                  alt={`${project.title} on Product Hunt`}
+                  width={200}
+                  height={43}
+                  loading="lazy"
+                />
+              </a>
+            )}
+          </div>
+
+          <div className="pj-modal-grid">
+            <div>
+              <p className="pj-modal-summary">{project.summary}</p>
+              <h4 className="pj-modal-section">What it does</h4>
+              <ul className="pj-highlights">
+                {project.highlights.map((h, i) => (
+                  <motion.li
+                    key={h}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 + i * 0.06, duration: 0.4, ease: EASE }}
+                  >
+                    <span className="pj-highlight-icon">
+                      <FaCheck />
+                    </span>
+                    {h}
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              {project.metrics && (
+                <div className="pj-metrics pj-metrics--modal">
+                  {project.metrics.map((m) => (
+                    <div key={m.label} className="pj-metric">
+                      <span className="pj-metric-value">{m.value}</span>
+                      <span className="pj-metric-label">{m.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <h4 className="pj-modal-section">Built with</h4>
+              <div className="pj-chip-row">
+                {project.stack.map((t) => (
+                  <TechChip key={t} name={t} large />
+                ))}
+              </div>
+
+              {project.install && (
+                <>
+                  <h4 className="pj-modal-section">Install</h4>
+                  <InstallBlock items={project.install} />
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+/* ═══════════════════════════════════════════
+   SECTION
+   ═══════════════════════════════════════════ */
+
+const Projects: React.FC = () => {
+  const [filter, setFilter] = useState<Filter>("All");
+  const [selected, setSelected] = useState<Project | null>(null);
+
+  const visible = useMemo(
+    () => (filter === "All" ? projects : projects.filter((p) => p.filters.includes(filter))),
+    [filter],
+  );
+
+  useEffect(() => {
+    document.body.style.overflow = selected ? "hidden" : "auto";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [selected]);
+
+  const countFor = (f: Filter) => (f === "All" ? projects.length : projects.filter((p) => p.filters.includes(f)).length);
+
+  return (
+    <section className="pj-section" id="projects">
+      <div className="pj-bg" aria-hidden>
+        <div className="pj-bg-grid" />
+        <div className="pj-orb pj-orb--1" />
+        <div className="pj-orb pj-orb--2" />
+        <div className="pj-orb pj-orb--3" />
+      </div>
+
+      <div className="pj-container">
+        <motion.header
+          className="pj-header"
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: EASE }}
+        >
+          <span className="pj-eyebrow">
+            <span className="pj-eyebrow-dot" />
+            Selected work
+          </span>
+          <h2 className="pj-title">
+            Things I've <span className="pj-title-gradient">shipped</span>
+          </h2>
+          <p className="pj-subtitle">
+            Developer tools, a programming language and products running in production. Every project here has a
+            live link, published package or public source behind it.
+          </p>
+        </motion.header>
+
+        <motion.div
+          className="pj-stats"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.15, ease: EASE }}
+        >
+          <div className="pj-stat">
+            <span className="pj-stat-value">
+              <CountUp to={projects.length} />
+            </span>
+            <span className="pj-stat-label">projects</span>
+          </div>
+          <div className="pj-stat">
+            <span className="pj-stat-value">
+              <CountUp to={2} />
+            </span>
+            <span className="pj-stat-label">products live</span>
+          </div>
+          <div className="pj-stat">
+            <span className="pj-stat-value">
+              <CountUp to={4} />
+            </span>
+            <span className="pj-stat-label">packages published</span>
+          </div>
+          <div className="pj-stat">
+            <span className="pj-stat-value">
+              <CountUp to={58} />
+            </span>
+            <span className="pj-stat-label">Orion stdlib modules</span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="pj-shipped"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+        >
+          <span className="pj-shipped-label">Shipped on</span>
+          {SHIPPED_ON.map(({ label, icon: Icon, color }) => (
+            <span key={label} className="pj-shipped-item">
+              <Icon style={{ color }} aria-hidden /> {label}
+            </span>
+          ))}
+        </motion.div>
+
+        <LayoutGroup>
+          <div className="pj-filters" role="tablist" aria-label="Filter projects">
+            {FILTERS.map((f) => (
+              <button
+                key={f}
+                type="button"
+                role="tab"
+                aria-selected={filter === f}
+                className={`pj-filter ${filter === f ? "active" : ""}`}
+                onClick={() => setFilter(f)}
+              >
+                {filter === f && (
+                  <motion.span
+                    layoutId="pj-filter-pill"
+                    className="pj-filter-pill"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                  />
+                )}
+                <span className="pj-filter-label">{f}</span>
+                <span className="pj-filter-count">{countFor(f)}</span>
+              </button>
+            ))}
+          </div>
+
+          <motion.div layout className="pj-grid">
+            <AnimatePresence mode="popLayout">
+              {visible.map((p, i) => (
+                <ProjectCard
+                  key={p.id}
+                  project={p}
+                  size={filter === "All" ? p.size : "md"}
+                  order={i}
+                  onOpen={setSelected}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </LayoutGroup>
+      </div>
+
+      <AnimatePresence>
+        {selected && <ProjectModal key={selected.id} project={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
     </section>
   );
 };
 
-export default Project;
+export default Projects;

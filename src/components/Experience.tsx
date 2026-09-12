@@ -185,7 +185,7 @@ const experiences: ExperienceItem[] = [
     date: 'September 2025 – Present',
     type: 'founder',
     description:
-      'Founded and lead the development of Orion AI — an AI-powered platform integrating multiple LLM models (GPT-4, Claude, Gemini) with automation tools and intelligent workflows. Also designing the Orion programming language, a modern interpreted language with clean syntax and built-in concurrency.',
+      'Founded and lead the development of Orion AI, an AI-powered platform integrating multiple LLM models (GPT-4, Claude, Gemini) with automation tools and intelligent workflows. Also designing the Orion programming language, a modern interpreted language with clean syntax and built-in concurrency.',
     highlights: [
       'Architected full-stack platform with React, TypeScript, Node.js, and PostgreSQL',
       'Integrated OpenAI, Anthropic Claude, and Google Gemini APIs for multi-model AI orchestration',
@@ -197,7 +197,7 @@ const experiences: ExperienceItem[] = [
     color: '#a855f7',
   },
   {
-    role: 'Backend Developer — AI Engineer',
+    role: 'Backend Developer & AI Engineer',
     company: 'BBVA Perú',
     companyUrl: 'https://www.bbva.pe/',
     date: 'January 2024 – Active',
@@ -218,7 +218,7 @@ const experiences: ExperienceItem[] = [
     role: 'Automation Developer',
     company: 'BBVA Perú',
     companyUrl: 'https://www.bbva.pe/',
-    date: 'December 2023 – 2024',
+    date: 'December 2023 – November 2024',
     type: 'intern',
     description:
       'Designed and implemented enterprise automation solutions for banking operations, reducing manual workload by 60%. Built data dashboards, automated reporting pipelines, and email notification systems for real-time KPI tracking.',
@@ -313,7 +313,7 @@ const Experience: React.FC = () => {
           Where I've <span className="exp-gradient-text">Worked</span>
         </h2>
         <p className="exp-subtitle">
-          From founding an AI startup to building enterprise banking solutions — my journey across full-stack development, AI engineering, and automation.
+          From founding an AI startup to building enterprise banking solutions: my journey across full-stack development, AI engineering, and automation.
         </p>
       </div>
 
