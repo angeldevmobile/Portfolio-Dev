@@ -358,7 +358,7 @@ const milestones: Milestone[] = [
 ];
 
 const heroStats = [
-	{ value: "3+", label: "Years shipping software" },
+	{ value: "2+", label: "Years shipping software" },
 	{ value: "2", label: "Products in public beta" },
 	{ value: "58", label: "Stdlib modules in Orion" },
 ];

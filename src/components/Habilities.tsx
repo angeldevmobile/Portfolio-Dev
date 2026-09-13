@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { FaReact, FaNodeJs, FaGithub, FaJava, FaFutbol, FaBrain, FaUsers, FaLightbulb, FaComments, FaRocket, FaHeart, FaGamepad } from "react-icons/fa";
+import { FaReact, FaNodeJs, FaGithub, FaJava, FaFutbol, FaBrain, FaUsers, FaLightbulb, FaComments, FaRocket, FaHeart, FaGamepad, FaDatabase } from "react-icons/fa";
 import {
   SiTailwindcss,
   SiHtml5,
@@ -12,13 +12,10 @@ import {
   SiMongodb,
   SiSpringboot,
   SiFirebase,
-  SiNetlify,
   SiVisualstudiocode,
   SiPostman,
   SiFigma,
-  SiAndroidstudio,
   SiFlutter,
-  SiIntellijidea,
   SiTypescript,
   SiGooglecloud,
   SiOpenai,
@@ -30,6 +27,27 @@ import {
   SiRedis,
   SiVercel,
   SiLinux,
+  SiRust,
+  SiTauri,
+  SiDart,
+  SiR,
+  SiWebassembly,
+  SiNextdotjs,
+  SiExpo,
+  SiFlask,
+  SiSqlite,
+  SiSupabase,
+  SiPandas,
+  SiTableau,
+  SiGithubcopilot,
+  SiGooglegemini,
+  SiAnthropic,
+  SiMeta,
+  SiDocker,
+  SiRender,
+  SiOracle,
+  SiJest,
+  SiTurborepo,
 } from "react-icons/si";
 import "./css/Skills.css";
 
@@ -39,9 +57,10 @@ import "./css/Skills.css";
 
 interface Skill {
   name: string;
-  icon: React.ReactNode;
-  color: string;
-  level: number;
+  icon?: React.ReactNode; // chips without an icon get a coloured dot
+  color?: string;
+  usedIn?: string[]; // real projects or jobs; highlights the chip
+  model?: boolean; // an AI model, counted in the stats bar
 }
 
 interface SoftSkillItem {
@@ -177,79 +196,174 @@ const ToolsSVG = () => (
   </svg>
 );
 
+const LanguagesSVG = () => (
+  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
+    <defs>
+      <linearGradient id="langGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#f97316" />
+        <stop offset="100%" stopColor="#facc15" />
+      </linearGradient>
+    </defs>
+    <rect x="6" y="10" width="48" height="40" rx="8" fill="url(#langGrad)" opacity="0.9" />
+    <path d="M24 22 L16 30 L24 38" stroke="#0a0a2e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M36 22 L44 30 L36 38" stroke="#0a0a2e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M32 20 L28 40" stroke="#0a0a2e" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
+    <circle cx="52" cy="8" r="1.5" fill="#fbbf24" opacity="0.5">
+      <animate attributeName="cy" values="8;4;8" dur="3s" repeatCount="indefinite" />
+    </circle>
+  </svg>
+);
+
+const SystemsSVG = () => (
+  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
+    <defs>
+      <linearGradient id="sysGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ec4899" />
+        <stop offset="100%" stopColor="#f97316" />
+      </linearGradient>
+    </defs>
+    {/* Chip pins */}
+    {[22, 30, 38].map((p) => (
+      <React.Fragment key={p}>
+        <rect x={p - 1.5} y="8" width="3" height="8" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
+        <rect x={p - 1.5} y="44" width="3" height="8" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
+        <rect x="8" y={p - 1.5} width="8" height="3" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
+        <rect x="44" y={p - 1.5} width="8" height="3" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
+      </React.Fragment>
+    ))}
+    {/* Die */}
+    <rect x="16" y="16" width="28" height="28" rx="6" fill="url(#sysGrad)" opacity="0.9" />
+    <rect x="23" y="23" width="14" height="14" rx="3" fill="#0a0a2e" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2.4s" repeatCount="indefinite" />
+    </rect>
+  </svg>
+);
+
 /* ═══════════════════════════════════════════
    TECHNICAL SKILL CATEGORIES
    ═══════════════════════════════════════════ */
 
+// usedIn only lists shipped projects (see Projects.tsx) or BBVA; certificates don't count
 const categories: SkillCategory[] = [
   {
-    title: "Frontend",
-    description: "Building beautiful, responsive user interfaces",
+    title: "Languages",
+    description: "What I write every day, and what my certificates cover",
+    gradient: ["#f97316", "#facc15"],
+    icon: <LanguagesSVG />,
+    skills: [
+      { name: "Rust", icon: <SiRust />, color: "#f46623", usedIn: ["Orion", "Flux", "Seam"] },
+      { name: "TypeScript", icon: <SiTypescript />, color: "#3178c6", usedIn: ["Flux", "Flux Learning", "Seam"] },
+      { name: "Python", icon: <SiPython />, color: "#3776ab", usedIn: ["BBVA", "Seam"] },
+      { name: "JavaScript", icon: <SiJavascript />, color: "#f7df1e", usedIn: ["Orion for VS Code", "Portfolio"] },
+      { name: "Java", icon: <FaJava />, color: "#ed8b00", usedIn: ["E-commerce"] },
+      { name: "Dart", icon: <SiDart />, color: "#0175c2", usedIn: ["SmartRemote"] },
+      { name: "VBA", color: "#22c55e", usedIn: ["BBVA"] },
+      { name: "SQL", icon: <FaDatabase />, color: "#94a3b8" },
+      { name: "R", icon: <SiR />, color: "#276dc3" },
+      { name: "COBOL", color: "#6366f1" },
+    ],
+  },
+  {
+    title: "Systems & Compilers",
+    description: "Language runtimes, native apps and cross-language bindings",
+    gradient: ["#ec4899", "#f97316"],
+    icon: <SystemsSVG />,
+    skills: [
+      { name: "Cranelift", color: "#f97316", usedIn: ["Orion"] },
+      { name: "Bytecode VM", color: "#ec4899", usedIn: ["Orion"] },
+      { name: "Rayon", color: "#f46623", usedIn: ["Orion"] },
+      { name: "Tauri", icon: <SiTauri />, color: "#ffc131", usedIn: ["Flux"] },
+      { name: "Tokio", color: "#e2e8f0", usedIn: ["Flux", "Orion Playground"] },
+      { name: "gRPC", color: "#22d3ee", usedIn: ["Flux"] },
+      { name: "WebAssembly", icon: <SiWebassembly />, color: "#8b7cf6", usedIn: ["Seam"] },
+      { name: "PyO3 / napi-rs", color: "#a78bfa", usedIn: ["Seam"] },
+      { name: "LSP / DAP", color: "#3b82f6", usedIn: ["Orion for VS Code"] },
+    ],
+  },
+  {
+    title: "Frontend & Mobile",
+    description: "Web, desktop and mobile interfaces",
     gradient: ["#06b6d4", "#3b82f6"],
     icon: <FrontendSVG />,
     skills: [
-      { name: "React", icon: <FaReact />, color: "#61dafb", level: 78 },
-      { name: "Flutter", icon: <SiFlutter />, color: "#02569B", level: 72 },
-      { name: "TypeScript", icon: <SiTypescript />, color: "#3178c6", level: 75 },
-      { name: "JavaScript", icon: <SiJavascript />, color: "#f7df1e", level: 80 },
-      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06b6d4", level: 78 },
-      { name: "HTML5", icon: <SiHtml5 />, color: "#e34f26", level: 85 },
-      { name: "CSS3", icon: <SiCss3 />, color: "#1572b6", level: 82 },
-      { name: "Bootstrap", icon: <SiBootstrap />, color: "#7952b3", level: 70 },
+      { name: "React", icon: <FaReact />, color: "#61dafb", usedIn: ["Flux", "Flux Learning", "Portfolio"] },
+      { name: "Next.js", icon: <SiNextdotjs />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
+      { name: "React Native", icon: <FaReact />, color: "#61dafb", usedIn: ["Flux Learning"] },
+      { name: "Expo", icon: <SiExpo />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
+      { name: "Flutter", icon: <SiFlutter />, color: "#54c5f8", usedIn: ["SmartRemote"] },
+      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06b6d4", usedIn: ["Flux", "Flux Learning", "Portfolio"] },
+      { name: "HTML5", icon: <SiHtml5 />, color: "#e34f26" },
+      { name: "CSS3", icon: <SiCss3 />, color: "#3b9ae1" },
+      { name: "Bootstrap", icon: <SiBootstrap />, color: "#8b5cf6" },
     ],
   },
   {
-    title: "Backend",
-    description: "Crafting robust APIs & server architectures",
+    title: "Backend & Data",
+    description: "APIs, databases and data analysis",
     gradient: ["#22c55e", "#06b6d4"],
     icon: <BackendSVG />,
     skills: [
-      { name: "Node.js", icon: <FaNodeJs />, color: "#339933", level: 78 },
-      { name: "Express", icon: <SiExpress />, color: "#ffffff", level: 74 },
-      { name: "Python", icon: <SiPython />, color: "#3776ab", level: 76 },
-      { name: "FastAPI", icon: <SiFastapi />, color: "#009688", level: 68 },
-      { name: "Java", icon: <FaJava />, color: "#ed8b00", level: 65 },
-      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6db33f", level: 62 },
-      { name: "MySQL", icon: <SiMysql />, color: "#4479a1", level: 75 },
-      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#4169e1", level: 72 },
-      { name: "MongoDB", icon: <SiMongodb />, color: "#47a248", level: 70 },
-      { name: "Redis", icon: <SiRedis />, color: "#dc382d", level: 60 },
+      { name: "Node.js", icon: <FaNodeJs />, color: "#5fa04e", usedIn: ["Seam", "Portfolio"] },
+      { name: "Express", icon: <SiExpress />, color: "#e2e8f0", usedIn: ["Portfolio"] },
+      { name: "Axum", color: "#f46623", usedIn: ["Flux", "Orion Playground"] },
+      { name: "Flask", icon: <SiFlask />, color: "#e2e8f0", usedIn: ["BBVA"] },
+      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6db33f", usedIn: ["E-commerce"] },
+      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#6b8cff", usedIn: ["Orion"] },
+      { name: "SQLite", icon: <SiSqlite />, color: "#44a3d8", usedIn: ["Flux", "Orion"] },
+      { name: "Supabase", icon: <SiSupabase />, color: "#3ecf8e", usedIn: ["Flux", "Flux Learning"] },
+      { name: "FastAPI", icon: <SiFastapi />, color: "#009688" },
+      { name: "MySQL", icon: <SiMysql />, color: "#4479a1" },
+      { name: "MongoDB", icon: <SiMongodb />, color: "#47a248" },
+      { name: "Redis", icon: <SiRedis />, color: "#dc382d" },
+      { name: "Firebase", icon: <SiFirebase />, color: "#ffca28" },
+      { name: "Pandas", icon: <SiPandas />, color: "#a78bfa" },
+      { name: "Tableau", icon: <SiTableau />, color: "#e97627" },
     ],
   },
   {
-    title: "AI & Machine Learning",
-    description: "Building intelligent systems & autonomous agents",
+    title: "AI Models & Tools",
+    description: "The models I build with and the tooling around them",
     gradient: ["#a855f7", "#ec4899"],
     icon: <AiSVG />,
     skills: [
-      { name: "OpenAI / GPT-4", icon: <SiOpenai />, color: "#10a37f", level: 78 },
-      { name: "LangChain", icon: <SiLangchain />, color: "#1c3c3c", level: 72 },
-      { name: "Hugging Face", icon: <SiHuggingface />, color: "#ffcc00", level: 65 },
-      { name: "TensorFlow", icon: <SiTensorflow />, color: "#ff6f00", level: 55 },
-      { name: "Claude API", icon: <FaBrain />, color: "#d97706", level: 74 },
-      { name: "Prompt Engineering", icon: <FaLightbulb />, color: "#fbbf24", level: 80 },
+      { name: "Claude", icon: <SiAnthropic />, color: "#d97757", model: true, usedIn: ["Flux", "Flux Learning"] },
+      { name: "Google Gemini", icon: <SiGooglegemini />, color: "#8e75ff", model: true, usedIn: ["BBVA"] },
+      { name: "OpenAI GPT", icon: <SiOpenai />, color: "#10a37f", model: true },
+      { name: "GitHub Copilot", icon: <SiGithubcopilot />, color: "#e2e8f0", model: true },
+      { name: "Llama", icon: <SiMeta />, color: "#3b82f6", model: true },
+      { name: "Google DocumentAI", icon: <SiGooglecloud />, color: "#4285f4", usedIn: ["BBVA"] },
+      { name: "Prompt Engineering", icon: <FaLightbulb />, color: "#fbbf24" },
+      { name: "LangChain", icon: <SiLangchain />, color: "#1c9c8c" },
+      { name: "Hugging Face", icon: <SiHuggingface />, color: "#ffcc00" },
+      { name: "TensorFlow", icon: <SiTensorflow />, color: "#ff6f00" },
     ],
   },
   {
-    title: "Tools & Cloud",
-    description: "Development workflow & cloud infrastructure",
+    title: "Cloud & Tools",
+    description: "Shipping, hosting and the daily workflow",
     gradient: ["#f59e0b", "#ef4444"],
     icon: <ToolsSVG />,
     skills: [
-      { name: "GitHub", icon: <FaGithub />, color: "#ffffff", level: 82 },
-      { name: "Google Cloud", icon: <SiGooglecloud />, color: "#4285f4", level: 60 },
-      { name: "Firebase", icon: <SiFirebase />, color: "#ffca28", level: 72 },
-      { name: "VS Code", icon: <SiVisualstudiocode />, color: "#007acc", level: 88 },
-      { name: "Postman", icon: <SiPostman />, color: "#ff6c37", level: 78 },
-      { name: "Figma", icon: <SiFigma />, color: "#f24e1e", level: 68 },
-      { name: "IntelliJ", icon: <SiIntellijidea />, color: "#ffffff", level: 70 },
-      { name: "Android Studio", icon: <SiAndroidstudio />, color: "#3ddc84", level: 75 },
-      { name: "Vercel", icon: <SiVercel />, color: "#ffffff", level: 72 },
-      { name: "Netlify", icon: <SiNetlify />, color: "#00c7b7", level: 75 },
-      { name: "Linux", icon: <SiLinux />, color: "#fcc624", level: 68 },
+      { name: "Git & GitHub", icon: <FaGithub />, color: "#e2e8f0", usedIn: ["every project"] },
+      { name: "Docker", icon: <SiDocker />, color: "#2496ed", usedIn: ["Orion Playground"] },
+      { name: "Render", icon: <SiRender />, color: "#e2e8f0", usedIn: ["Portfolio", "Orion Playground"] },
+      { name: "Vercel", icon: <SiVercel />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
+      { name: "Google Cloud", icon: <SiGooglecloud />, color: "#4285f4", usedIn: ["BBVA"] },
+      { name: "VS Code API", icon: <SiVisualstudiocode />, color: "#3aa0ff", usedIn: ["Orion for VS Code"] },
+      { name: "Jest", icon: <SiJest />, color: "#e44d6a", usedIn: ["Flux Learning"] },
+      { name: "Turborepo", icon: <SiTurborepo />, color: "#ef4444", usedIn: ["Flux Learning"] },
+      { name: "Oracle Cloud", icon: <SiOracle />, color: "#ff4d4d" },
+      { name: "Linux", icon: <SiLinux />, color: "#fcc624" },
+      { name: "Postman", icon: <SiPostman />, color: "#ff6c37" },
+      { name: "Figma", icon: <SiFigma />, color: "#f24e1e" },
     ],
   },
 ];
+
+// Stats derived from the cards, so the numbers can't drift from the lists
+const ALL_SKILLS = categories.flatMap((c) => c.skills);
+const TOTAL_TECH = ALL_SKILLS.length;
+const AI_MODEL_COUNT = ALL_SKILLS.filter((s) => s.model).length;
 
 /* ═══════════════════════════════════════════
    SOFT SKILLS & INTERESTS
@@ -469,7 +583,7 @@ const SkillCard: React.FC<{
   isVisible: boolean;
 }> = ({ category, catIdx, isVisible }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null);
+  const inUse = category.skills.filter((s) => s.usedIn).length;
 
   useTilt3D(cardRef, 6);
 
@@ -497,62 +611,35 @@ const SkillCard: React.FC<{
           <p className="category-description">{category.description}</p>
         </div>
 
-        {/* Skills list */}
-        <div className="skills-list">
+        {/* Skills as chips; highlighted ones were used in a real project or job */}
+        <ul className="skill-chips">
           {category.skills.map((skill, skillIdx) => (
-            <div
+            <li
               key={skill.name}
-              className={`skill-item ${isVisible ? "visible" : ""}`}
+              className={`skill-chip ${skill.usedIn ? "skill-chip--core" : ""} ${isVisible ? "visible" : ""}`}
               style={{
                 '--skill-index': skillIdx,
-                '--skill-color': skill.color,
+                '--skill-color': skill.color ?? "#94a3b8",
               } as React.CSSProperties}
-              onMouseEnter={() => setHoveredSkill(skill.name)}
-              onMouseLeave={() => setHoveredSkill(null)}
+              data-used={skill.usedIn ? `Used in ${skill.usedIn.join(", ")}` : undefined}
+              aria-label={skill.usedIn ? `${skill.name}, used in ${skill.usedIn.join(", ")}` : undefined}
             >
-              <div className="skill-icon-wrapper">
-                <div
-                  className="skill-icon-bg"
-                  style={{
-                    background: hoveredSkill === skill.name
-                      ? `${skill.color}20`
-                      : "rgba(255,255,255,0.03)",
-                    borderColor: hoveredSkill === skill.name
-                      ? `${skill.color}40`
-                      : "rgba(255,255,255,0.06)",
-                  }}
-                >
-                  <span className="skill-icon" style={{ color: skill.color }}>
-                    {skill.icon}
-                  </span>
-                </div>
-              </div>
-
-              <div className="skill-info">
-                <div className="skill-name-row">
-                  <span className="skill-name">{skill.name}</span>
-                  <span className="skill-level-text" style={{ color: skill.color }}>
-                    {skill.level}%
-                  </span>
-                </div>
-                <div className="skill-bar">
-                  <div
-                    className="skill-bar-fill"
-                    style={{
-                      width: isVisible ? `${skill.level}%` : "0%",
-                      background: `linear-gradient(90deg, ${skill.color}, ${skill.color}88)`,
-                      transitionDelay: `${0.6 + skillIdx * 0.08}s`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
+              {skill.icon ? (
+                <span className="skill-chip-icon" aria-hidden>{skill.icon}</span>
+              ) : (
+                <span className="skill-chip-dot" aria-hidden />
+              )}
+              {skill.name}
+              {skill.usedIn && <span className="skill-chip-mark" aria-hidden />}
+            </li>
           ))}
-        </div>
+        </ul>
 
         {/* Skill count badge */}
         <div className="category-footer">
-          <span className="skill-count">{category.skills.length} technologies</span>
+          <span className="skill-count">
+            {category.skills.length} technologies · {inUse} in real projects
+          </span>
         </div>
       </div>
     </div>
@@ -611,9 +698,9 @@ const Skills: React.FC = () => {
   const statsRef = useRef<HTMLDivElement>(null);
 
   // Animated counters 
-  const techCount = useCounter(15, statsVisible, 1800);
-  const projectCount = useCounter(6, statsVisible, 1500);
-  const aiModels = useCounter(4, statsVisible, 1200);
+  const techCount = useCounter(TOTAL_TECH, statsVisible, 1800);
+  const projectCount = useCounter(8, statsVisible, 1500);
+  const aiModels = useCounter(AI_MODEL_COUNT, statsVisible, 1200);
   const yearsExp = useCounter(2, statsVisible, 1000);
 
   useEffect(() => {
@@ -687,8 +774,8 @@ const Skills: React.FC = () => {
           Skills & <span className="skills-gradient-text">Technologies</span>
         </h2>
         <p className="skills-subtitle">
-          A comprehensive toolkit built through years of professional development,
-          from pixel-perfect frontends to intelligent AI systems and cloud infrastructure.
+          A toolkit built over 2+ years of shipping software, from pixel-perfect
+          frontends to intelligent AI systems and cloud infrastructure.
         </p>
       </div>
 
@@ -714,6 +801,11 @@ const Skills: React.FC = () => {
           <span className="stat-label">Years Experience</span>
         </div>
       </div>
+
+      <p className="skills-legend">
+        <span className="skills-legend-mark" aria-hidden />
+        Highlighted skills are ones I've used in shipped projects or at BBVA. Hover one to see where.
+      </p>
 
       {/* ═══ TECHNICAL SKILLS GRID ═══ */}
       <div className="skills-categories">

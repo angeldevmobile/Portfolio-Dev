@@ -111,7 +111,7 @@ const Footer: React.FC<FooterProps> = ({ setCurrentSection }) => {
 
         {/* Bottom bar */}
         <div className="footer-bottom">
-          <p className="footer-copy">© 2026 Angel Zapata. All rights reserved.</p>
+          <p className="footer-copy">© 2024 Angel Zapata. All rights reserved.</p>
 
           <div className="footer-bottom-actions">
             <div className="footer-socials">
