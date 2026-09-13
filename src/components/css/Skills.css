@@ -297,7 +297,7 @@
   align-items: center;
   gap: 0;
   max-width: 800px;
-  margin: 0 auto 36px;
+  margin: 0 auto 64px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 20px;
@@ -348,304 +348,223 @@
   background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
-/* ── Legend for the highlighted chips ── */
-/* .skills-section prefix beats the global "p" rule in Experience.css */
-.skills-section .skills-legend {
-  position: relative;
-  z-index: 1;
-  max-width: 640px;
-  margin: 0 auto 40px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #64748b;
-  text-align: center;
+/* ═══════════════════════════════════════════
+   BLOCK HEADINGS (core stack / also worked with)
+   ═══════════════════════════════════════════ */
+
+.skills-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-bottom: 18px;
 }
 
-/* Inline, so it stays next to the first word when the text wraps */
-.skills-legend-mark {
-  display: inline-block;
-  vertical-align: middle;
-  width: 8px;
-  height: 8px;
-  margin: -2px 8px 0 0;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.18);
+.skills-block-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: #f1f5f9;
+}
+
+/* .skills-section prefix beats the global "p" rule in Experience.css */
+.skills-section .skills-block-sub {
+  max-width: none;
+  margin: 0;
+  font-size: 13.5px;
+  color: #64748b;
 }
 
 /* ═══════════════════════════════════════════
-   CATEGORY CARDS
+   CORE STACK
    ═══════════════════════════════════════════ */
 
-.skills-categories {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto 100px;
+.skills-core {
   position: relative;
   z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto 28px;
 }
 
-.skills-category-card {
-  position: relative;
-  height: 100%;
-  opacity: 0;
-  transform: translateY(60px) rotateX(6deg);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-              visibility 0.7s;
-  transition-delay: calc(var(--cat-index) * 0.12s);
-  /* Tilt overrides transform via JS, but we still need entry animation */
-  will-change: transform;
+.core-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.skills-category-card.visible {
-  opacity: 1;
-  transform: translateY(0) rotateX(0deg);
-}
-
-/* Glow border */
-.category-glow {
-  position: absolute;
-  inset: -1px;
-  border-radius: 24px;
-  background: linear-gradient(
-    135deg,
-    var(--cat-color-1),
-    transparent 40%,
-    transparent 60%,
-    var(--cat-color-2)
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  filter: blur(1px);
-  z-index: 0;
-}
-
-.skills-category-card:hover .category-glow {
-  opacity: 0.6;
-}
-
-/* Card inner */
-.category-inner {
+.core-tile {
   position: relative;
   display: flex;
-  flex-direction: column;
-  height: 100%;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  overflow: hidden;
   background: linear-gradient(145deg, #111127, #0d0d22);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 24px;
-  padding: 30px 26px 22px;
-  z-index: 1;
-  transition: box-shadow 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  opacity: 0;
+  transform: translateY(14px);
+  /* Stagger only the entrance, so hover feedback stays instant */
+  transition:
+    opacity 0.5s ease calc(var(--skill-index) * 0.04s),
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--skill-index) * 0.04s),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
-.skills-category-card:hover .category-inner {
-  box-shadow:
-    0 20px 50px rgba(0, 0, 0, 0.3),
-    0 0 30px color-mix(in srgb, var(--cat-color-1) 10%, transparent);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-/* Corner shine */
-.category-shine {
+/* Accent bar in the technology's colour */
+.core-tile::before {
+  content: '';
   position: absolute;
-  top: 0;
   left: 0;
-  width: 200px;
-  height: 200px;
-  border-top-left-radius: 24px;
-  background: radial-gradient(
-    circle at top left,
-    color-mix(in srgb, var(--cat-color-1) 6%, transparent),
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--skill-color);
+  opacity: 0.8;
 }
 
-/* ── SVG floating icon ── */
-.category-svg-wrapper {
-  position: absolute;
-  top: 18px;
-  right: 18px;
+.core-tile.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.core-tile.visible:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--skill-color) 40%, transparent);
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.3),
+    0 0 20px color-mix(in srgb, var(--skill-color) 12%, transparent);
+}
+
+.core-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 44px;
   height: 44px;
-  z-index: 3;
-  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--cat-color-1) 30%, transparent));
-  transition: transform 0.4s ease;
+  border-radius: 12px;
+  font-size: 22px;
+  color: var(--skill-color);
+  background: color-mix(in srgb, var(--skill-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--skill-color) 25%, transparent);
 }
 
-.skills-category-card:hover .category-svg-wrapper {
-  transform: translateY(-4px) rotate(8deg) scale(1.1);
+/* Tailwind's preflight makes svg display:block; keep it centred in the box */
+.core-icon svg {
+  display: block;
 }
 
-.category-svg {
-  width: 100%;
-  height: 100%;
+.core-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
-/* ── Category Header ── */
-.category-header {
-  margin-bottom: 22px;
-  padding-right: 56px;
+.core-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.core-used {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  color: #64748b;
+}
+
+/* ═══════════════════════════════════════════
+   ALSO WORKED WITH
+   ═══════════════════════════════════════════ */
+
+.skills-more {
   position: relative;
   z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto 100px;
+  padding: 24px 28px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.category-title {
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
+.skills-more.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.skills-more .skills-block-title {
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.more-list {
+  margin: 0;
+}
+
+.more-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 16px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.more-row:first-child {
+  border-top: 0;
+}
+
+.more-cat {
+  padding-top: 2px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   background: linear-gradient(135deg, var(--cat-color-1), var(--cat-color-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.skills-section .category-description {
-  max-width: none;
-  margin: 0;
-  font-size: 13.5px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-/* ═══════════════════════════════════════════
-   SKILL CHIPS
-   ═══════════════════════════════════════════ */
-
-.skill-chips {
-  position: relative;
-  z-index: 1;
+.more-items {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  list-style: none;
+  row-gap: 4px;
   margin: 0;
-  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #94a3b8;
 }
 
-.skill-chip {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #cbd5e1;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  cursor: default;
-  opacity: 0;
-  transform: translateY(8px);
-  /* Stagger only the entrance, so hover feedback stays instant */
-  transition:
-    opacity 0.45s ease calc(0.25s + var(--skill-index) * 0.035s),
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) calc(0.25s + var(--skill-index) * 0.035s),
-    border-color 0.2s ease,
-    background 0.2s ease;
-}
-
-.skill-chip.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.skill-chip:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: color-mix(in srgb, var(--skill-color) 50%, transparent);
-}
-
-.skill-chip-icon {
-  display: flex;
-  font-size: 15px;
-  color: var(--skill-color);
-}
-
-/* Tailwind's preflight makes svg display:block; keep it inside the chip's flex row */
-.skill-chip-icon svg {
-  display: block;
-}
-
-.skill-chip-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--skill-color);
-  opacity: 0.7;
-}
-
-/* Used in a real project or at work */
-.skill-chip--core {
-  color: #f1f5f9;
-  background: color-mix(in srgb, var(--cat-color-1) 9%, transparent);
-  border-color: color-mix(in srgb, var(--cat-color-1) 35%, transparent);
-}
-
-.skill-chip-mark {
-  width: 6px;
-  height: 6px;
-  margin-left: 1px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18);
-}
-
-/* "Used in ..." tooltip, built from the data-used attribute */
-.skill-chip--core::after {
-  content: attr(data-used);
-  position: absolute;
-  left: 50%;
-  bottom: calc(100% + 8px);
-  z-index: 10;
-  transform: translate(-50%, 4px);
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 11.5px;
-  font-weight: 600;
+/* Trailing separator, glued to its item, so a wrapped line never starts with "·" */
+.more-item {
   white-space: nowrap;
+}
+
+.more-item:not(:last-child)::after {
+  content: '·';
+  margin: 0 10px;
+  color: #334155;
+}
+
+.more-item[title] {
+  cursor: help;
+}
+
+.more-item[title]:hover {
   color: #e2e8f0;
-  background: #1e1e3a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-
-.skill-chip--core:hover::after {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
-
-/* ── Category Footer ── */
-.category-footer {
-  margin-top: auto;
-  padding-top: 16px;
-  position: relative;
-  z-index: 1;
-}
-
-.category-footer::before {
-  content: '';
-  display: block;
-  height: 1px;
-  margin: 8px 0 14px;
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.skill-count {
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  color: #475569;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 /* ═══════════════════════════════════════════
@@ -877,9 +796,8 @@
    ═══════════════════════════════════════════ */
 
 @media (max-width: 1100px) {
-  .skills-categories {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+  .core-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .soft-skills-grid {
@@ -901,6 +819,7 @@
     flex-wrap: wrap;
     gap: 16px;
     padding: 20px 16px;
+    margin-bottom: 48px;
   }
 
   .skills-stat-divider {
@@ -911,20 +830,26 @@
     min-width: 45%;
   }
 
-  .skills-categories {
+  .core-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .skills-more {
+    margin-bottom: 80px;
+    padding: 20px 18px 8px;
+  }
+
+  /* Category label above its items */
+  .more-row {
     grid-template-columns: 1fr;
-    max-width: 560px;
-    margin: 0 auto 80px;
+    gap: 6px;
   }
 
   .soft-skills-grid {
     grid-template-columns: 1fr;
     max-width: 400px;
     margin: 0 auto;
-  }
-
-  .category-inner {
-    padding: 26px 20px 20px;
   }
 
   .interests-grid {
@@ -942,13 +867,24 @@
     padding: 60px 16px 80px;
   }
 
-  .category-inner {
-    padding: 22px 16px 18px;
+  .core-tile {
+    gap: 10px;
+    padding: 12px 12px 12px 14px;
   }
 
-  .skill-chip {
-    padding: 6px 10px;
-    font-size: 12.5px;
+  .core-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+  }
+
+  .core-name {
+    font-size: 14px;
+  }
+
+  .more-items {
+    font-size: 13.5px;
   }
 
   .stat-number {
@@ -973,7 +909,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skill-chip {
+  .core-tile,
+  .skills-more {
     transition: none;
   }
 }

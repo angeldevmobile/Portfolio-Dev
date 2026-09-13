@@ -1,53 +1,28 @@
 import React, { useRef, useState, useEffect, useCallback } from "react";
-import { FaReact, FaNodeJs, FaGithub, FaJava, FaFutbol, FaBrain, FaUsers, FaLightbulb, FaComments, FaRocket, FaHeart, FaGamepad, FaDatabase } from "react-icons/fa";
 import {
-  SiTailwindcss,
-  SiHtml5,
-  SiCss3,
-  SiJavascript,
-  SiBootstrap,
-  SiExpress,
-  SiPython,
-  SiMysql,
-  SiMongodb,
-  SiSpringboot,
-  SiFirebase,
-  SiVisualstudiocode,
-  SiPostman,
-  SiFigma,
-  SiFlutter,
-  SiTypescript,
-  SiGooglecloud,
-  SiOpenai,
-  SiLangchain,
-  SiTensorflow,
-  SiHuggingface,
-  SiFastapi,
-  SiPostgresql,
-  SiRedis,
-  SiVercel,
-  SiLinux,
+  FaReact,
+  FaNodeJs,
+  FaGithub,
+  FaFutbol,
+  FaBrain,
+  FaUsers,
+  FaLightbulb,
+  FaComments,
+  FaRocket,
+  FaHeart,
+  FaGamepad,
+  FaMicrochip,
+} from "react-icons/fa";
+import {
   SiRust,
+  SiTypescript,
+  SiPython,
   SiTauri,
-  SiDart,
-  SiR,
-  SiWebassembly,
-  SiNextdotjs,
-  SiExpo,
-  SiFlask,
-  SiSqlite,
-  SiSupabase,
-  SiPandas,
-  SiTableau,
-  SiGithubcopilot,
-  SiGooglegemini,
+  SiFlutter,
+  SiPostgresql,
   SiAnthropic,
-  SiMeta,
+  SiGooglegemini,
   SiDocker,
-  SiRender,
-  SiOracle,
-  SiJest,
-  SiTurborepo,
 } from "react-icons/si";
 import "./css/Skills.css";
 
@@ -57,10 +32,15 @@ import "./css/Skills.css";
 
 interface Skill {
   name: string;
-  icon?: React.ReactNode; // chips without an icon get a coloured dot
-  color?: string;
-  usedIn?: string[]; // real projects or jobs; highlights the chip
+  usedIn?: string[]; // shipped projects (see Projects.tsx) or BBVA; certificates don't count
+  core?: { icon: React.ReactNode; color: string }; // featured in the core stack
   model?: boolean; // an AI model, counted in the stats bar
+}
+
+interface SkillCategory {
+  title: string;
+  gradient: [string, string];
+  skills: Skill[];
 }
 
 interface SoftSkillItem {
@@ -70,299 +50,117 @@ interface SoftSkillItem {
   description: string;
 }
 
-interface SkillCategory {
-  title: string;
-  description: string;
-  gradient: [string, string];
-  icon: React.ReactNode;
-  skills: Skill[];
-}
-
 /* ═══════════════════════════════════════════
-   SVG CATEGORY ICONS
+   TECHNICAL SKILLS
    ═══════════════════════════════════════════ */
 
-const FrontendSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="feGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#06b6d4" />
-        <stop offset="100%" stopColor="#3b82f6" />
-      </linearGradient>
-    </defs>
-    <rect x="6" y="8" width="48" height="34" rx="4" fill="url(#feGrad)" opacity="0.9" />
-    <rect x="10" y="12" width="40" height="24" rx="2" fill="#0a0a2e" opacity="0.8" />
-    <rect x="16" y="18" width="14" height="2" rx="1" fill="#38bdf8" opacity="0.7">
-      <animate attributeName="width" values="14;20;14" dur="3s" repeatCount="indefinite" />
-    </rect>
-    <rect x="16" y="23" width="20" height="2" rx="1" fill="#818cf8" opacity="0.5" />
-    <rect x="16" y="28" width="10" height="2" rx="1" fill="#34d399" opacity="0.6" />
-    <rect x="22" y="44" width="16" height="3" rx="1.5" fill="#475569" />
-    <circle cx="50" cy="6" r="2" fill="#38bdf8" opacity="0.4">
-      <animate attributeName="cy" values="6;3;6" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const BackendSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="beGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#22c55e" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-    </defs>
-    <rect x="10" y="6" width="40" height="12" rx="4" fill="url(#beGrad)" opacity="0.9" />
-    <circle cx="17" cy="12" r="2" fill="#0a0a2e" opacity="0.6" />
-    <circle cx="24" cy="12" r="2" fill="#0a0a2e" opacity="0.6" />
-    <rect x="30" y="10" width="14" height="4" rx="2" fill="#0a0a2e" opacity="0.4" />
-    <rect x="10" y="22" width="40" height="12" rx="4" fill="url(#beGrad)" opacity="0.7" />
-    <circle cx="17" cy="28" r="2" fill="#0a0a2e" opacity="0.6" />
-    <circle cx="24" cy="28" r="2" fill="#0a0a2e" opacity="0.6" />
-    <rect x="10" y="38" width="40" height="12" rx="4" fill="url(#beGrad)" opacity="0.5" />
-    <circle cx="17" cy="44" r="2" fill="#0a0a2e" opacity="0.6" />
-    <circle cx="24" cy="44" r="2" fill="#0a0a2e" opacity="0.6" />
-    <line x1="30" y1="18" x2="30" y2="22" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-    <line x1="30" y1="34" x2="30" y2="38" stroke="#22c55e" strokeWidth="1" opacity="0.4" />
-    <circle cx="52" cy="8" r="1.5" fill="#34d399" opacity="0.5">
-      <animate attributeName="cy" values="8;4;8" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const AiSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="aiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#a855f7" />
-        <stop offset="100%" stopColor="#ec4899" />
-      </linearGradient>
-      <filter id="aiGlow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="2" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
-    </defs>
-    {/* Brain outline */}
-    <path d="M30 8 Q18 8 14 18 Q10 28 16 36 Q12 40 14 46 Q16 52 24 52 L30 52 L36 52 Q44 52 46 46 Q48 40 44 36 Q50 28 46 18 Q42 8 30 8 Z"
-      fill="none" stroke="url(#aiGrad)" strokeWidth="2" opacity="0.8" filter="url(#aiGlow)" />
-    {/* Neural connections */}
-    <circle cx="24" cy="22" r="3" fill="#a855f7" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="36" cy="22" r="3" fill="#ec4899" opacity="0.6">
-      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" begin="0.5s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="30" cy="32" r="3" fill="#a855f7" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" begin="1s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="22" cy="40" r="2.5" fill="#ec4899" opacity="0.5" />
-    <circle cx="38" cy="40" r="2.5" fill="#a855f7" opacity="0.5" />
-    <line x1="24" y1="22" x2="36" y2="22" stroke="#c084fc" strokeWidth="1" opacity="0.3" />
-    <line x1="24" y1="22" x2="30" y2="32" stroke="#c084fc" strokeWidth="1" opacity="0.3" />
-    <line x1="36" y1="22" x2="30" y2="32" stroke="#c084fc" strokeWidth="1" opacity="0.3" />
-    <line x1="30" y1="32" x2="22" y2="40" stroke="#c084fc" strokeWidth="1" opacity="0.3" />
-    <line x1="30" y1="32" x2="38" y2="40" stroke="#c084fc" strokeWidth="1" opacity="0.3" />
-    {/* Sparkles */}
-    <circle cx="8" cy="16" r="1.5" fill="#a855f7" opacity="0.4">
-      <animate attributeName="r" values="1.5;2.5;1.5" dur="2s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="52" cy="44" r="1" fill="#ec4899" opacity="0.4">
-      <animate attributeName="r" values="1;2;1" dur="2.5s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const ToolsSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="toolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#f59e0b" />
-        <stop offset="100%" stopColor="#ef4444" />
-      </linearGradient>
-    </defs>
-    <path d="M18 14 L30 26 L26 30 L14 18" stroke="url(#toolGrad)" strokeWidth="4" strokeLinecap="round" fill="none" opacity="0.9" />
-    <circle cx="12" cy="12" r="6" fill="none" stroke="url(#toolGrad)" strokeWidth="2" opacity="0.6" />
-    <circle cx="42" cy="36" r="10" fill="url(#toolGrad)" opacity="0.8">
-      <animateTransform attributeName="transform" type="rotate" from="0 42 36" to="360 42 36" dur="12s" repeatCount="indefinite" />
-    </circle>
-    <circle cx="42" cy="36" r="5" fill="#0a0a2e" opacity="0.8" />
-    <rect x="40" y="22" width="4" height="6" rx="1" fill="url(#toolGrad)" opacity="0.6" />
-    <rect x="40" y="44" width="4" height="6" rx="1" fill="url(#toolGrad)" opacity="0.6" />
-    <rect x="28" y="34" width="6" height="4" rx="1" fill="url(#toolGrad)" opacity="0.6" />
-    <rect x="50" y="34" width="6" height="4" rx="1" fill="url(#toolGrad)" opacity="0.6" />
-    <circle cx="8" cy="48" r="1.5" fill="#fbbf24" opacity="0.4">
-      <animate attributeName="cy" values="48;44;48" dur="2.8s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const LanguagesSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="langGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#f97316" />
-        <stop offset="100%" stopColor="#facc15" />
-      </linearGradient>
-    </defs>
-    <rect x="6" y="10" width="48" height="40" rx="8" fill="url(#langGrad)" opacity="0.9" />
-    <path d="M24 22 L16 30 L24 38" stroke="#0a0a2e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M36 22 L44 30 L36 38" stroke="#0a0a2e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M32 20 L28 40" stroke="#0a0a2e" strokeWidth="3" strokeLinecap="round" opacity="0.7" />
-    <circle cx="52" cy="8" r="1.5" fill="#fbbf24" opacity="0.5">
-      <animate attributeName="cy" values="8;4;8" dur="3s" repeatCount="indefinite" />
-    </circle>
-  </svg>
-);
-
-const SystemsSVG = () => (
-  <svg className="category-svg" viewBox="0 0 60 60" fill="none">
-    <defs>
-      <linearGradient id="sysGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#ec4899" />
-        <stop offset="100%" stopColor="#f97316" />
-      </linearGradient>
-    </defs>
-    {/* Chip pins */}
-    {[22, 30, 38].map((p) => (
-      <React.Fragment key={p}>
-        <rect x={p - 1.5} y="8" width="3" height="8" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
-        <rect x={p - 1.5} y="44" width="3" height="8" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
-        <rect x="8" y={p - 1.5} width="8" height="3" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
-        <rect x="44" y={p - 1.5} width="8" height="3" rx="1.5" fill="url(#sysGrad)" opacity="0.6" />
-      </React.Fragment>
-    ))}
-    {/* Die */}
-    <rect x="16" y="16" width="28" height="28" rx="6" fill="url(#sysGrad)" opacity="0.9" />
-    <rect x="23" y="23" width="14" height="14" rx="3" fill="#0a0a2e" opacity="0.7">
-      <animate attributeName="opacity" values="0.7;0.4;0.7" dur="2.4s" repeatCount="indefinite" />
-    </rect>
-  </svg>
-);
-
-/* ═══════════════════════════════════════════
-   TECHNICAL SKILL CATEGORIES
-   ═══════════════════════════════════════════ */
-
-// usedIn only lists shipped projects (see Projects.tsx) or BBVA; certificates don't count
 const categories: SkillCategory[] = [
   {
     title: "Languages",
-    description: "What I write every day, and what my certificates cover",
     gradient: ["#f97316", "#facc15"],
-    icon: <LanguagesSVG />,
     skills: [
-      { name: "Rust", icon: <SiRust />, color: "#f46623", usedIn: ["Orion", "Flux", "Seam"] },
-      { name: "TypeScript", icon: <SiTypescript />, color: "#3178c6", usedIn: ["Flux", "Flux Learning", "Seam"] },
-      { name: "Python", icon: <SiPython />, color: "#3776ab", usedIn: ["BBVA", "Seam"] },
-      { name: "JavaScript", icon: <SiJavascript />, color: "#f7df1e", usedIn: ["Orion for VS Code", "Portfolio"] },
-      { name: "Java", icon: <FaJava />, color: "#ed8b00", usedIn: ["E-commerce"] },
-      { name: "Dart", icon: <SiDart />, color: "#0175c2", usedIn: ["SmartRemote"] },
-      { name: "VBA", color: "#22c55e", usedIn: ["BBVA"] },
-      { name: "SQL", icon: <FaDatabase />, color: "#94a3b8" },
-      { name: "R", icon: <SiR />, color: "#276dc3" },
-      { name: "COBOL", color: "#6366f1" },
+      { name: "Rust", usedIn: ["Orion", "Flux", "Seam"], core: { icon: <SiRust />, color: "#f46623" } },
+      { name: "TypeScript", usedIn: ["Flux", "Flux Learning", "Seam"], core: { icon: <SiTypescript />, color: "#3178c6" } },
+      { name: "Python", usedIn: ["BBVA", "Seam"], core: { icon: <SiPython />, color: "#3776ab" } },
+      { name: "JavaScript", usedIn: ["Orion for VS Code", "Portfolio"] },
+      { name: "Java", usedIn: ["E-commerce"] },
+      { name: "Dart", usedIn: ["SmartRemote"] },
+      { name: "VBA", usedIn: ["BBVA"] },
+      { name: "SQL" },
+      { name: "R" },
+      { name: "COBOL" },
     ],
   },
   {
     title: "Systems & Compilers",
-    description: "Language runtimes, native apps and cross-language bindings",
     gradient: ["#ec4899", "#f97316"],
-    icon: <SystemsSVG />,
     skills: [
-      { name: "Cranelift", color: "#f97316", usedIn: ["Orion"] },
-      { name: "Bytecode VM", color: "#ec4899", usedIn: ["Orion"] },
-      { name: "Rayon", color: "#f46623", usedIn: ["Orion"] },
-      { name: "Tauri", icon: <SiTauri />, color: "#ffc131", usedIn: ["Flux"] },
-      { name: "Tokio", color: "#e2e8f0", usedIn: ["Flux", "Orion Playground"] },
-      { name: "gRPC", color: "#22d3ee", usedIn: ["Flux"] },
-      { name: "WebAssembly", icon: <SiWebassembly />, color: "#8b7cf6", usedIn: ["Seam"] },
-      { name: "PyO3 / napi-rs", color: "#a78bfa", usedIn: ["Seam"] },
-      { name: "LSP / DAP", color: "#3b82f6", usedIn: ["Orion for VS Code"] },
+      { name: "Cranelift", usedIn: ["Orion"], core: { icon: <FaMicrochip />, color: "#fb923c" } },
+      { name: "Tauri", usedIn: ["Flux"], core: { icon: <SiTauri />, color: "#ffc131" } },
+      { name: "Bytecode VM", usedIn: ["Orion"] },
+      { name: "Rayon", usedIn: ["Orion"] },
+      { name: "Tokio", usedIn: ["Flux", "Orion Playground"] },
+      { name: "gRPC", usedIn: ["Flux"] },
+      { name: "WebAssembly", usedIn: ["Seam"] },
+      { name: "PyO3 / napi-rs", usedIn: ["Seam"] },
+      { name: "LSP / DAP", usedIn: ["Orion for VS Code"] },
     ],
   },
   {
     title: "Frontend & Mobile",
-    description: "Web, desktop and mobile interfaces",
     gradient: ["#06b6d4", "#3b82f6"],
-    icon: <FrontendSVG />,
     skills: [
-      { name: "React", icon: <FaReact />, color: "#61dafb", usedIn: ["Flux", "Flux Learning", "Portfolio"] },
-      { name: "Next.js", icon: <SiNextdotjs />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
-      { name: "React Native", icon: <FaReact />, color: "#61dafb", usedIn: ["Flux Learning"] },
-      { name: "Expo", icon: <SiExpo />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
-      { name: "Flutter", icon: <SiFlutter />, color: "#54c5f8", usedIn: ["SmartRemote"] },
-      { name: "Tailwind CSS", icon: <SiTailwindcss />, color: "#06b6d4", usedIn: ["Flux", "Flux Learning", "Portfolio"] },
-      { name: "HTML5", icon: <SiHtml5 />, color: "#e34f26" },
-      { name: "CSS3", icon: <SiCss3 />, color: "#3b9ae1" },
-      { name: "Bootstrap", icon: <SiBootstrap />, color: "#8b5cf6" },
+      { name: "React", usedIn: ["Flux", "Flux Learning", "Portfolio"], core: { icon: <FaReact />, color: "#61dafb" } },
+      { name: "Flutter", usedIn: ["SmartRemote"], core: { icon: <SiFlutter />, color: "#54c5f8" } },
+      { name: "Next.js", usedIn: ["Flux Learning"] },
+      { name: "React Native", usedIn: ["Flux Learning"] },
+      { name: "Expo", usedIn: ["Flux Learning"] },
+      { name: "Tailwind CSS", usedIn: ["Flux", "Flux Learning", "Portfolio"] },
+      { name: "HTML5" },
+      { name: "CSS3" },
+      { name: "Bootstrap" },
     ],
   },
   {
     title: "Backend & Data",
-    description: "APIs, databases and data analysis",
     gradient: ["#22c55e", "#06b6d4"],
-    icon: <BackendSVG />,
     skills: [
-      { name: "Node.js", icon: <FaNodeJs />, color: "#5fa04e", usedIn: ["Seam", "Portfolio"] },
-      { name: "Express", icon: <SiExpress />, color: "#e2e8f0", usedIn: ["Portfolio"] },
-      { name: "Axum", color: "#f46623", usedIn: ["Flux", "Orion Playground"] },
-      { name: "Flask", icon: <SiFlask />, color: "#e2e8f0", usedIn: ["BBVA"] },
-      { name: "Spring Boot", icon: <SiSpringboot />, color: "#6db33f", usedIn: ["E-commerce"] },
-      { name: "PostgreSQL", icon: <SiPostgresql />, color: "#6b8cff", usedIn: ["Orion"] },
-      { name: "SQLite", icon: <SiSqlite />, color: "#44a3d8", usedIn: ["Flux", "Orion"] },
-      { name: "Supabase", icon: <SiSupabase />, color: "#3ecf8e", usedIn: ["Flux", "Flux Learning"] },
-      { name: "FastAPI", icon: <SiFastapi />, color: "#009688" },
-      { name: "MySQL", icon: <SiMysql />, color: "#4479a1" },
-      { name: "MongoDB", icon: <SiMongodb />, color: "#47a248" },
-      { name: "Redis", icon: <SiRedis />, color: "#dc382d" },
-      { name: "Firebase", icon: <SiFirebase />, color: "#ffca28" },
-      { name: "Pandas", icon: <SiPandas />, color: "#a78bfa" },
-      { name: "Tableau", icon: <SiTableau />, color: "#e97627" },
+      { name: "Node.js", usedIn: ["Seam", "Portfolio"], core: { icon: <FaNodeJs />, color: "#5fa04e" } },
+      { name: "PostgreSQL", usedIn: ["Orion"], core: { icon: <SiPostgresql />, color: "#6b8cff" } },
+      { name: "Express", usedIn: ["Portfolio"] },
+      { name: "Axum", usedIn: ["Flux", "Orion Playground"] },
+      { name: "Flask", usedIn: ["BBVA"] },
+      { name: "Spring Boot", usedIn: ["E-commerce"] },
+      { name: "SQLite", usedIn: ["Flux", "Orion"] },
+      { name: "Supabase", usedIn: ["Flux", "Flux Learning"] },
+      { name: "FastAPI" },
+      { name: "MySQL" },
+      { name: "MongoDB" },
+      { name: "Redis" },
+      { name: "Firebase" },
+      { name: "Pandas" },
+      { name: "Tableau" },
     ],
   },
   {
     title: "AI Models & Tools",
-    description: "The models I build with and the tooling around them",
     gradient: ["#a855f7", "#ec4899"],
-    icon: <AiSVG />,
     skills: [
-      { name: "Claude", icon: <SiAnthropic />, color: "#d97757", model: true, usedIn: ["Flux", "Flux Learning"] },
-      { name: "Google Gemini", icon: <SiGooglegemini />, color: "#8e75ff", model: true, usedIn: ["BBVA"] },
-      { name: "OpenAI GPT", icon: <SiOpenai />, color: "#10a37f", model: true },
-      { name: "GitHub Copilot", icon: <SiGithubcopilot />, color: "#e2e8f0", model: true },
-      { name: "Llama", icon: <SiMeta />, color: "#3b82f6", model: true },
-      { name: "Google DocumentAI", icon: <SiGooglecloud />, color: "#4285f4", usedIn: ["BBVA"] },
-      { name: "Prompt Engineering", icon: <FaLightbulb />, color: "#fbbf24" },
-      { name: "LangChain", icon: <SiLangchain />, color: "#1c9c8c" },
-      { name: "Hugging Face", icon: <SiHuggingface />, color: "#ffcc00" },
-      { name: "TensorFlow", icon: <SiTensorflow />, color: "#ff6f00" },
+      { name: "Claude", model: true, usedIn: ["Flux", "Flux Learning"], core: { icon: <SiAnthropic />, color: "#d97757" } },
+      { name: "Google Gemini", model: true, usedIn: ["BBVA"], core: { icon: <SiGooglegemini />, color: "#8e75ff" } },
+      { name: "OpenAI GPT", model: true },
+      { name: "GitHub Copilot", model: true },
+      { name: "Llama", model: true },
+      { name: "Google DocumentAI", usedIn: ["BBVA"] },
+      { name: "Prompt Engineering" },
+      { name: "LangChain" },
+      { name: "Hugging Face" },
+      { name: "TensorFlow" },
     ],
   },
   {
     title: "Cloud & Tools",
-    description: "Shipping, hosting and the daily workflow",
     gradient: ["#f59e0b", "#ef4444"],
-    icon: <ToolsSVG />,
     skills: [
-      { name: "Git & GitHub", icon: <FaGithub />, color: "#e2e8f0", usedIn: ["every project"] },
-      { name: "Docker", icon: <SiDocker />, color: "#2496ed", usedIn: ["Orion Playground"] },
-      { name: "Render", icon: <SiRender />, color: "#e2e8f0", usedIn: ["Portfolio", "Orion Playground"] },
-      { name: "Vercel", icon: <SiVercel />, color: "#e2e8f0", usedIn: ["Flux Learning"] },
-      { name: "Google Cloud", icon: <SiGooglecloud />, color: "#4285f4", usedIn: ["BBVA"] },
-      { name: "VS Code API", icon: <SiVisualstudiocode />, color: "#3aa0ff", usedIn: ["Orion for VS Code"] },
-      { name: "Jest", icon: <SiJest />, color: "#e44d6a", usedIn: ["Flux Learning"] },
-      { name: "Turborepo", icon: <SiTurborepo />, color: "#ef4444", usedIn: ["Flux Learning"] },
-      { name: "Oracle Cloud", icon: <SiOracle />, color: "#ff4d4d" },
-      { name: "Linux", icon: <SiLinux />, color: "#fcc624" },
-      { name: "Postman", icon: <SiPostman />, color: "#ff6c37" },
-      { name: "Figma", icon: <SiFigma />, color: "#f24e1e" },
+      { name: "Docker", usedIn: ["Orion Playground"], core: { icon: <SiDocker />, color: "#2496ed" } },
+      { name: "Git & GitHub", usedIn: ["every project"] },
+      { name: "Render", usedIn: ["Portfolio", "Orion Playground"] },
+      { name: "Vercel", usedIn: ["Flux Learning"] },
+      { name: "Google Cloud", usedIn: ["BBVA"] },
+      { name: "VS Code API", usedIn: ["Orion for VS Code"] },
+      { name: "Jest", usedIn: ["Flux Learning"] },
+      { name: "Turborepo", usedIn: ["Flux Learning"] },
+      { name: "Oracle Cloud" },
+      { name: "Linux" },
+      { name: "Postman" },
+      { name: "Figma" },
     ],
   },
 ];
 
-// Stats derived from the cards, so the numbers can't drift from the lists
+// Derived from the lists above, so the stats and the grid can't drift apart
 const ALL_SKILLS = categories.flatMap((c) => c.skills);
-const TOTAL_TECH = ALL_SKILLS.length;
+const CORE_SKILLS = ALL_SKILLS.filter((s) => s.core);
 const AI_MODEL_COUNT = ALL_SKILLS.filter((s) => s.model).length;
 
 /* ═══════════════════════════════════════════
@@ -423,55 +221,6 @@ const interests: InterestItem[] = [
   { name: "Language Design", icon: <FaRocket />, color: "#ec4899", emoji: "🚀" },
   { name: "Tech News", icon: <FaLightbulb />, color: "#f59e0b", emoji: "📰" },
 ];
-
-/* ═══════════════════════════════════════════
-   3D TILT EFFECT HOOK
-   ═══════════════════════════════════════════ */
-
-const useTilt3D = (ref: React.RefObject<HTMLDivElement | null>, intensity: number = 8) => {
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    let rafId: number;
-    let targetX = 0;
-    let targetY = 0;
-    let currentX = 0;
-    let currentY = 0;
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      targetX = ((y - centerY) / centerY) * -intensity;
-      targetY = ((x - centerX) / centerX) * intensity;
-    };
-
-    const onMouseLeave = () => {
-      targetX = 0;
-      targetY = 0;
-    };
-
-    const animate = () => {
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
-      el.style.transform = `perspective(800px) rotateX(${currentX}deg) rotateY(${currentY}deg) scale3d(1.02, 1.02, 1.02)`;
-      rafId = requestAnimationFrame(animate);
-    };
-
-    el.addEventListener('mousemove', onMouseMove);
-    el.addEventListener('mouseleave', onMouseLeave);
-    rafId = requestAnimationFrame(animate);
-
-    return () => {
-      el.removeEventListener('mousemove', onMouseMove);
-      el.removeEventListener('mouseleave', onMouseLeave);
-      cancelAnimationFrame(rafId);
-    };
-  }, [ref, intensity]);
-};
 
 /* ═══════════════════════════════════════════
    ANIMATED COUNTER HOOK
@@ -574,80 +323,7 @@ const useMagneticHover = () => {
 };
 
 /* ═══════════════════════════════════════════
-   SKILL CARD WITH 3D TILT 
-   ═══════════════════════════════════════════ */
-
-const SkillCard: React.FC<{
-  category: SkillCategory;
-  catIdx: number;
-  isVisible: boolean;
-}> = ({ category, catIdx, isVisible }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const inUse = category.skills.filter((s) => s.usedIn).length;
-
-  useTilt3D(cardRef, 6);
-
-  return (
-    <div
-      ref={cardRef}
-      className={`skills-category-card ${isVisible ? "visible" : ""}`}
-      style={{
-        '--cat-index': catIdx,
-        '--cat-color-1': category.gradient[0],
-        '--cat-color-2': category.gradient[1],
-      } as React.CSSProperties}
-    >
-      <div className="category-glow" />
-      <div className="category-inner">
-        {/* Corner shine effect */}
-        <div className="category-shine" />
-
-        {/* SVG floating icon */}
-        <div className="category-svg-wrapper">{category.icon}</div>
-
-        {/* Category header */}
-        <div className="category-header">
-          <h3 className="category-title">{category.title}</h3>
-          <p className="category-description">{category.description}</p>
-        </div>
-
-        {/* Skills as chips; highlighted ones were used in a real project or job */}
-        <ul className="skill-chips">
-          {category.skills.map((skill, skillIdx) => (
-            <li
-              key={skill.name}
-              className={`skill-chip ${skill.usedIn ? "skill-chip--core" : ""} ${isVisible ? "visible" : ""}`}
-              style={{
-                '--skill-index': skillIdx,
-                '--skill-color': skill.color ?? "#94a3b8",
-              } as React.CSSProperties}
-              data-used={skill.usedIn ? `Used in ${skill.usedIn.join(", ")}` : undefined}
-              aria-label={skill.usedIn ? `${skill.name}, used in ${skill.usedIn.join(", ")}` : undefined}
-            >
-              {skill.icon ? (
-                <span className="skill-chip-icon" aria-hidden>{skill.icon}</span>
-              ) : (
-                <span className="skill-chip-dot" aria-hidden />
-              )}
-              {skill.name}
-              {skill.usedIn && <span className="skill-chip-mark" aria-hidden />}
-            </li>
-          ))}
-        </ul>
-
-        {/* Skill count badge */}
-        <div className="category-footer">
-          <span className="skill-count">
-            {category.skills.length} technologies · {inUse} in real projects
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-/* ═══════════════════════════════════════════
-   SOFT SKILL CARD — Hexagonal design
+   SOFT SKILL CARD
    ═══════════════════════════════════════════ */
 
 const SoftSkillCard: React.FC<{
@@ -686,19 +362,21 @@ const SoftSkillCard: React.FC<{
 
 const Skills: React.FC = () => {
   const [headerVisible, setHeaderVisible] = useState(false);
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(categories.length).fill(false));
+  const [statsVisible, setStatsVisible] = useState(false);
+  const [coreVisible, setCoreVisible] = useState(false);
+  const [moreVisible, setMoreVisible] = useState(false);
   const [softVisible, setSoftVisible] = useState(false);
   const [interestsVisible, setInterestsVisible] = useState(false);
-  const [statsVisible, setStatsVisible] = useState(false);
 
   const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const coreRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLDivElement>(null);
   const softRef = useRef<HTMLDivElement>(null);
   const interestsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
 
-  // Animated counters 
-  const techCount = useCounter(TOTAL_TECH, statsVisible, 1800);
+  // Animated counters
+  const coreCount = useCounter(CORE_SKILLS.length, statsVisible, 1400);
   const projectCount = useCounter(8, statsVisible, 1500);
   const aiModels = useCounter(AI_MODEL_COUNT, statsVisible, 1200);
   const yearsExp = useCounter(2, statsVisible, 1000);
@@ -706,53 +384,30 @@ const Skills: React.FC = () => {
   useEffect(() => {
     const options = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
 
-    const headerObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setHeaderVisible(true); });
-    }, options);
-
-    const cardObs = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const idx = cardsRef.current.indexOf(entry.target as HTMLDivElement);
-          if (idx !== -1) {
-            setTimeout(() => {
-              setVisibleCards((prev) => {
-                const next = [...prev];
-                next[idx] = true;
-                return next;
-              });
-            }, idx * 200);
-          }
-        }
-      });
-    }, options);
-
-    const softObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setSoftVisible(true); });
-    }, options);
-
-    const interestsObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setInterestsVisible(true); });
-    }, options);
-
-    const statsObs = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) setStatsVisible(true); });
-    }, { threshold: 0.3 });
-
-    if (headerRef.current) headerObs.observe(headerRef.current);
-    if (softRef.current) softObs.observe(softRef.current);
-    if (interestsRef.current) interestsObs.observe(interestsRef.current);
-    if (statsRef.current) statsObs.observe(statsRef.current);
-
-    cardsRef.current.forEach((c) => { if (c) cardObs.observe(c); });
-
-    return () => {
-      headerObs.disconnect();
-      cardObs.disconnect();
-      softObs.disconnect();
-      interestsObs.disconnect();
-      statsObs.disconnect();
+    // Each block flips its own flag the first time it scrolls into view
+    const watch = (
+      el: HTMLElement | null,
+      setVisible: (v: boolean) => void,
+      opts: IntersectionObserverInit = options,
+    ) => {
+      if (!el) return null;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) setVisible(true); });
+      }, opts);
+      obs.observe(el);
+      return obs;
     };
+
+    const observers = [
+      watch(headerRef.current, setHeaderVisible),
+      watch(statsRef.current, setStatsVisible, { threshold: 0.3 }),
+      watch(coreRef.current, setCoreVisible),
+      watch(moreRef.current, setMoreVisible),
+      watch(softRef.current, setSoftVisible),
+      watch(interestsRef.current, setInterestsVisible),
+    ];
+
+    return () => observers.forEach((o) => o?.disconnect());
   }, []);
 
   return (
@@ -782,8 +437,8 @@ const Skills: React.FC = () => {
       {/* ═══ STATS BAR ═══ */}
       <div ref={statsRef} className={`skills-stats ${statsVisible ? 'visible' : ''}`}>
         <div className="skills-stat-item">
-          <span className="stat-number">{techCount}+</span>
-          <span className="stat-label">Technologies</span>
+          <span className="stat-number">{coreCount}</span>
+          <span className="stat-label">Core Technologies</span>
         </div>
         <div className="skills-stat-divider" />
         <div className="skills-stat-item">
@@ -792,7 +447,7 @@ const Skills: React.FC = () => {
         </div>
         <div className="skills-stat-divider" />
         <div className="skills-stat-item">
-          <span className="stat-number">{aiModels}+</span>
+          <span className="stat-number">{aiModels}</span>
           <span className="stat-label">AI Models Used</span>
         </div>
         <div className="skills-stat-divider" />
@@ -802,25 +457,68 @@ const Skills: React.FC = () => {
         </div>
       </div>
 
-      <p className="skills-legend">
-        <span className="skills-legend-mark" aria-hidden />
-        Highlighted skills are ones I've used in shipped projects or at BBVA. Hover one to see where.
-      </p>
+      {/* ═══ CORE STACK ═══ */}
+      <div ref={coreRef} className="skills-core">
+        <div className="skills-block-head">
+          <h3 className="skills-block-title">Core stack</h3>
+          <p className="skills-block-sub">What I build with day to day, and where it runs</p>
+        </div>
 
-      {/* ═══ TECHNICAL SKILLS GRID ═══ */}
-      <div className="skills-categories">
-        {categories.map((category, catIdx) => (
-          <div
-            key={category.title}
-            ref={(el) => { cardsRef.current[catIdx] = el; }}
-          >
-            <SkillCard
-              category={category}
-              catIdx={catIdx}
-              isVisible={visibleCards[catIdx]}
-            />
-          </div>
-        ))}
+        <ul className="core-grid">
+          {CORE_SKILLS.map((skill, idx) => (
+            <li
+              key={skill.name}
+              className={`core-tile ${coreVisible ? "visible" : ""}`}
+              style={{
+                '--skill-color': skill.core?.color,
+                '--skill-index': idx,
+              } as React.CSSProperties}
+            >
+              <span className="core-icon" aria-hidden>{skill.core?.icon}</span>
+              <span className="core-text">
+                <span className="core-name">{skill.name}</span>
+                {skill.usedIn && (
+                  <span className="core-used" title={skill.usedIn.join(" · ")}>
+                    {skill.usedIn.join(" · ")}
+                  </span>
+                )}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ═══ ALSO WORKED WITH ═══ */}
+      <div ref={moreRef} className={`skills-more ${moreVisible ? "visible" : ""}`}>
+        <h3 className="skills-block-title">Also worked with</h3>
+        <dl className="more-list">
+          {categories.map((category) => {
+            const rest = category.skills.filter((s) => !s.core);
+            return (
+              <div
+                key={category.title}
+                className="more-row"
+                style={{
+                  '--cat-color-1': category.gradient[0],
+                  '--cat-color-2': category.gradient[1],
+                } as React.CSSProperties}
+              >
+                <dt className="more-cat">{category.title}</dt>
+                <dd className="more-items">
+                  {rest.map((skill) => (
+                    <span
+                      key={skill.name}
+                      className="more-item"
+                      title={skill.usedIn ? `Used in ${skill.usedIn.join(", ")}` : undefined}
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
       </div>
 
       {/* ═══ SOFT SKILLS ═══ */}
