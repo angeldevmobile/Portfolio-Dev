@@ -63,6 +63,7 @@ import fluxApp2 from "../assets/projects/flux-app-2.png";
 import fluxApp3 from "../assets/projects/flux-app-3.png";
 import fluxSite from "../assets/projects/flux-site.png";
 import fluxLearning from "../assets/projects/flux-learning.png";
+import fluxLogo from "../assets/projects/flux-logo.png";
 import orionVscode from "../assets/projects/orion-vscode.jpeg";
 import orionTerminal from "../assets/projects/orion-terminal.jpeg";
 import orionExcel from "../assets/projects/orion-excel.jpeg";
@@ -247,6 +248,7 @@ const projects: Project[] = [
 			"Next.js",
 			"React",
 			"TypeScript",
+			"Flux API Client",
 			"Expo",
 			"React Native",
 			"Supabase",
@@ -258,7 +260,7 @@ const projects: Project[] = [
 			"Vercel",
 		],
 		preview: "browser",
-		previewUrl: "flux-learning-7g6f.vercel.app",
+		previewUrl: "www.flux-learning.org",
 		images: [
 			{
 				src: fluxLearning,
@@ -268,7 +270,7 @@ const projects: Project[] = [
 		links: [
 			{
 				label: "Open the app",
-				url: "https://flux-learning-7g6f.vercel.app/",
+				url: "https://www.flux-learning.org/",
 				kind: "live",
 			},
 		],
@@ -603,6 +605,11 @@ const projects: Project[] = [
 	},
 ];
 
+// Logos propios que no existen en react-icons
+const TECH_IMG: Record<string, string> = {
+	"Flux API Client": fluxLogo,
+};
+
 const TECH: Record<string, { icon: IconType; color: string }> = {
 	Rust: { icon: SiRust, color: "#f46623" },
 	Tauri: { icon: SiTauri, color: "#ffc131" },
@@ -677,9 +684,12 @@ const TechChip: React.FC<{ name: string; large?: boolean }> = ({
 }) => {
 	const tech = TECH[name];
 	const Icon = tech?.icon;
+	const img = TECH_IMG[name];
 	return (
 		<span className={`pj-chip ${large ? "pj-chip--lg" : ""}`}>
-			{Icon ? (
+			{img ? (
+				<img src={img} alt="" className="pj-chip-img" aria-hidden />
+			) : Icon ? (
 				<Icon style={{ color: tech.color }} aria-hidden />
 			) : (
 				<span className="pj-chip-dot" aria-hidden />

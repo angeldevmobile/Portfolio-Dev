@@ -26,7 +26,7 @@ const PROJECT_LINKS = [
   { label: "Orion Language", url: "https://docs-orion.onrender.com/" },
   { label: "Orion Playground", url: "https://docs-orion.onrender.com/playground" },
   { label: "Flux", url: "https://fluxapi.dev/" },
-  { label: "Flux Learning", url: "https://flux-learning-7g6f.vercel.app/" },
+  { label: "Flux Learning", url: "https://www.flux-learning.org/" },
   {
     label: "Orion for VS Code",
     url: "https://marketplace.visualstudio.com/items?itemName=AngelZapata.oriondev",

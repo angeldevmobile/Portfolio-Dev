@@ -152,7 +152,7 @@ const categories: SkillCategory[] = [
       { name: "Turborepo", usedIn: ["Flux Learning"] },
       { name: "Oracle Cloud" },
       { name: "Linux" },
-      { name: "Postman" },
+      { name: "Flux Api Client" },
       { name: "Figma" },
     ],
   },

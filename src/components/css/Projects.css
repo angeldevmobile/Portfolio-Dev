@@ -913,6 +913,18 @@
   flex-shrink: 0;
 }
 
+.pj-chip-img {
+  width: 13px;
+  height: 13px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.pj-chip--lg .pj-chip-img {
+  width: 15px;
+  height: 15px;
+}
+
 .pj-chip-dot {
   width: 6px;
   height: 6px;
